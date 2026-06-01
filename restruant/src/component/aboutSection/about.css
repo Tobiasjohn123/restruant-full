@@ -1,0 +1,450 @@
+/* ============================================================
+   ABOUT SECTION - PREMIUM GLASS DESIGN
+   ============================================================ */
+
+.about-section {
+  position: relative;
+  padding: 6rem 2rem;
+  background: radial-gradient(ellipse at top left, rgba(181, 100, 0, 0.291) 0%, rgb(80, 35, 5) 10%, rgb(15, 16, 16) 30%, rgb(16, 16, 15) 100%);
+  overflow-x: hidden;
+}
+
+.about-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+/* ============================================================
+   STORY SECTION
+   ============================================================ */
+
+.about-story {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+  margin-bottom: 6rem;
+  opacity: 0;
+  transform: translateY(40px);
+  transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.about-story.animate {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.about-label {
+  display: inline-block;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  color: #f5c842;
+  font-family: var(--font-display);
+  margin-bottom: 1rem;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 0.3rem 1rem;
+  border-radius: 50px;
+  backdrop-filter: blur(10px);
+}
+
+.about-title {
+  font-size: 2.5rem;
+  font-family: var(--font-display2);
+  color: white;
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+}
+
+.about-description {
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.7;
+  margin-bottom: 1.2rem;
+  font-size: 1rem;
+}
+
+.about-stats {
+  display: flex;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.stat {
+  text-align: center;
+}
+
+.stat-number {
+  display: block;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #f5c842;
+  font-family: var(--font-display2);
+}
+
+.stat-label {
+  display: block;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: 0.3rem;
+}
+
+.about-story-image {
+  position: relative;
+}
+
+.image-wrapper {
+  position: relative;
+  border-radius: 24px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  aspect-ratio: 4 / 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(197, 101, 11, 0.15), transparent);
+  pointer-events: none;
+}
+
+.image-placeholder {
+  font-size: 5rem;
+  opacity: 0.7;
+}
+
+/* ============================================================
+   CHEF SECTION
+   ============================================================ */
+
+.about-chef {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+  margin-bottom: 6rem;
+  opacity: 0;
+  transform: translateY(40px);
+  transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1) 0.2s;
+}
+
+.about-chef.animate {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.chef-signature {
+  margin-top: 1.5rem;
+  font-style: italic;
+  color: #f5c842;
+  font-size: 1rem;
+  font-family: var(--font-display2);
+}
+
+/* ============================================================
+   PHILOSOPHY SECTION
+   ============================================================ */
+
+.about-philosophy {
+  text-align: center;
+  margin-bottom: 6rem;
+  opacity: 0;
+  transform: translateY(40px);
+  transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1) 0.4s;
+}
+
+.about-philosophy.animate {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.philosophy-title {
+  font-size: 2.2rem;
+  font-family: var(--font-display2);
+  color: white;
+  margin-bottom: 3rem;
+}
+
+.philosophy-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+}
+
+.philosophy-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(16px);
+  border-radius: 20px;
+  padding: 2rem 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.philosophy-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(197, 101, 11, 0.4);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.philosophy-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.philosophy-card h3 {
+  font-family: var(--font-display);
+  color: #f5c842;
+  font-size: 1.2rem;
+  margin-bottom: 0.8rem;
+}
+
+.philosophy-card p {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+/* ============================================================
+   INGREDIENTS SHOWCASE
+   ============================================================ */
+
+.about-ingredients {
+  margin-bottom: 6rem;
+  opacity: 0;
+  transform: translateY(40px);
+  transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1) 0.6s;
+}
+
+.about-ingredients.animate {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.ingredients-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.ingredients-title {
+  font-size: 2rem;
+  font-family: var(--font-display2);
+  color: white;
+  margin-bottom: 1rem;
+}
+
+.ingredients-subtitle {
+  color: rgba(255, 255, 255, 0.7);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.ingredients-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+}
+
+.ingredient-card {
+  text-align: center;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 16px;
+  transition: all 0.3s ease;
+}
+
+.ingredient-card:hover {
+  background: rgba(255, 255, 255, 0.06);
+  transform: translateY(-4px);
+}
+
+.ingredient-icon {
+  font-size: 2rem;
+  margin-bottom: 0.8rem;
+}
+
+.ingredient-card h4 {
+  font-family: var(--font-display);
+  color: #f5c842;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.ingredient-card p {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.75rem;
+}
+
+/* ============================================================
+   CTA SECTION
+   ============================================================ */
+
+.about-cta {
+  text-align: center;
+  padding: 4rem;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  border-radius: 32px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  opacity: 0;
+  transform: translateY(40px);
+  transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1) 0.8s;
+}
+
+.about-cta.animate {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.cta-content h2 {
+  font-size: 2rem;
+  font-family: var(--font-display2);
+  color: white;
+  margin-bottom: 0.8rem;
+}
+
+.cta-content p {
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 2rem;
+}
+
+.cta-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.cta-primary {
+  background: linear-gradient(135deg, #c5650b, #e07a1f);
+  color: white;
+  padding: 0.8rem 2rem;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.cta-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(197, 101, 11, 0.4);
+}
+
+.cta-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 0.8rem 2rem;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.cta-secondary:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-3px);
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 1024px) {
+  .about-story,
+  .about-chef {
+    gap: 2rem;
+  }
+  
+  .about-title {
+    font-size: 2rem;
+  }
+  
+  .philosophy-grid,
+  .ingredients-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .about-section {
+    padding: 3rem 1.5rem;
+  }
+  
+  .about-story,
+  .about-chef {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  .about-chef .about-chef-image {
+    order: 2;
+  }
+  
+  .about-chef .about-chef-content {
+    order: 1;
+  }
+  
+  .about-stats {
+    justify-content: center;
+  }
+  
+  .philosophy-grid,
+  .ingredients-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .about-title {
+    font-size: 1.8rem;
+    text-align: center;
+  }
+  
+  .about-label {
+    display: table;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .about-description {
+    text-align: center;
+  }
+  
+  .cta-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .cta-primary,
+  .cta-secondary {
+    width: 200px;
+  }
+  
+  .about-cta {
+    padding: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .about-stats {
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  
+  .philosophy-title {
+    font-size: 1.6rem;
+  }
+  
+  .ingredients-title {
+    font-size: 1.5rem;
+  }
+  
+  .cta-content h2 {
+    font-size: 1.4rem;
+  }
+}
