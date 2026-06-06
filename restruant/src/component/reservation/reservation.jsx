@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import '../reservation/reservation.css';
+import { supabase } from '../../lib/supabase';
+import './reservation.css'; // Make sure this matches your project file structure (e.g. '../reservation/reservation.css' or './reservation.css')
+
 // ==========================================
 // SVG ICONS
 // ==========================================
@@ -44,16 +46,32 @@ export default function ReservationPage() {
   const [selectedTime, setSelectedTime] = useState(null);
   const [guests, setGuests] = useState(2);
   const [selectedZone, setSelectedZone] = useState('dining');
+  
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
     email: '',
     specialRequests: ''
   });
+
+  // State for real-time field validation
+  const [fieldErrors, setFieldErrors] = useState({
+    name: '',
+    phone: '',
+    email: ''
+  });
+
+  const [touched, setTouched] = useState({
+    name: false,
+    phone: false,
+    email: false
+  });
+
   const [isProcessing, setIsProcessing] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
   const [bookingId, setBookingId] = useState(null);
   const [animateStep, setAnimateStep] = useState(true);
+  const [error, setError] = useState(null);
 
   // Scroll to top when step changes
   useEffect(() => {
@@ -66,6 +84,13 @@ export default function ReservationPage() {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }, [isComplete]);
+
+  // Run real-time validation when formData changes
+  useEffect(() => {
+    if (step === 2) {
+      validateFormFields();
+    }
+  }, [formData]);
 
   // Generate next 7 days
   const getNext7Days = () => {
@@ -97,6 +122,18 @@ export default function ReservationPage() {
   ];
 
   const handleNextStep = () => {
+    // If transitioning from step 2, run a final validation block
+    if (step === 2) {
+      // Touch all fields to show any hidden errors
+      setTouched({ name: true, phone: true, email: true });
+      const isValid = validateFormFields();
+      if (!isValid) {
+        setError('Please fix the errors in the form before proceeding.');
+        return;
+      }
+      setError(null);
+    }
+
     setAnimateStep(false);
     setTimeout(() => {
       setStep(step + 1);
@@ -126,14 +163,186 @@ export default function ReservationPage() {
     return 'Large Table for 8+';
   };
 
-  const handleConfirmBooking = () => {
+  // ✅ REAL-TIME INDIVIDUAL FIELD VALIDATION
+  const validateSingleField = (name, value) => {
+    let errorMsg = '';
+    
+    if (name === 'name') {
+      const nameRegex = /^[A-Za-z\s]{2,50}$/;
+      if (!value.trim()) {
+        errorMsg = 'Full name is required';
+      } else if (!nameRegex.test(value.trim())) {
+        errorMsg = 'Name must contain only letters and spaces (2-50 characters)';
+      }
+    }
+
+    if (name === 'phone') {
+      const digitsOnly = value.replace(/\D/g, '');
+      if (!value) {
+        errorMsg = 'Phone number is required';
+      } else if (digitsOnly.length < 7) {
+        errorMsg = 'Phone number must be at least 7 digits (numbers only)';
+      } else if (digitsOnly.length > 15) {
+        errorMsg = 'Phone number cannot exceed 15 digits';
+      }
+    }
+
+    if (name === 'email') {
+      if (value.trim()) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(value.trim())) {
+          errorMsg = 'Please enter a valid email address (e.g. name@domain.com)';
+        }
+      }
+    }
+
+    return errorMsg;
+  };
+
+  // Run validation on all fields and return true if form is valid
+  const validateFormFields = () => {
+    const nameErr = validateSingleField('name', formData.name);
+    const phoneErr = validateSingleField('phone', formData.phone);
+    const emailErr = validateSingleField('email', formData.email);
+
+    setFieldErrors({
+      name: nameErr,
+      phone: phoneErr,
+      email: emailErr
+    });
+
+    return !(nameErr || phoneErr || emailErr);
+  };
+
+  // Handle Input Changes with Instant Restrictions and Validation
+  const handleInputChange = (field, e) => {
+    let value = e.target.value;
+    
+    // Apply immediate input restrictions
+    if (field === 'name') {
+      value = value.replace(/[^A-Za-z\s]/g, '');
+    } else if (field === 'phone') {
+      value = value.replace(/\D/g, '');
+    }
+
+    setFormData(prev => ({ ...prev, [field]: value }));
+
+    // Instant error detection
+    const errorMsg = validateSingleField(field, value);
+    setFieldErrors(prev => ({ ...prev, [field]: errorMsg }));
+  };
+
+  // Handle Blur to trigger "touched" state and show errors immediately
+  const handleBlur = (field) => {
+    setTouched(prev => ({ ...prev, [field]: true }));
+    const errorMsg = validateSingleField(field, formData[field]);
+    setFieldErrors(prev => ({ ...prev, [field]: errorMsg }));
+  };
+
+  // Check if form has any errors or missing required fields
+  const isFormInvalid = () => {
+    // If required fields are empty
+    if (!formData.name.trim() || !formData.phone) {
+      return true;
+    }
+    // If any error messages exist in our validation state
+    return !!(fieldErrors.name || fieldErrors.phone || fieldErrors.email);
+  };
+
+  // ✅ DUPLICATE BOOKING CHECK
+  const checkDuplicateBooking = async () => {
+    const cleanPhone = formData.phone.replace(/\D/g, '');
+    console.log('🔍 Running duplicate check for:', { phone: cleanPhone, date: selectedDate.fullDate, time: selectedTime });
+    
+    try {
+      const { data, error } = await supabase
+        .from('bookings')
+        .select('booking_id, status')
+        .eq('customer_phone', cleanPhone)
+        .eq('booking_date', selectedDate.fullDate)
+        .eq('booking_time', selectedTime)
+        .in('status', ['pending', 'confirmed']);
+
+      console.log('📋 Duplicate check result:', { data, error });
+
+      if (error) {
+        console.error('Duplicate check error:', error);
+        return true; // Assume duplicate check failed, allow but alert
+      }
+
+      if (data && data.length > 0) {
+        setError('An active booking already exists for this phone number at this date and time.');
+        return false;
+      }
+      return true;
+    } catch (e) {
+      console.error(e);
+      return true;
+    }
+  };
+
+  // ✅ HANDLE CONFIRM BOOKING with all validations
+  const handleConfirmBooking = async () => {
+    // Prevent double clicks / concurrent requests
+    if (isProcessing) return;
+
+    // Final check
+    if (!validateFormFields()) {
+      setError('Please resolve all validation errors before confirming.');
+      return;
+    }
+    
     setIsProcessing(true);
-    setTimeout(() => {
-      const newBookingId = 'RES-' + Math.random().toString(36).substr(2, 8).toUpperCase();
+    setError(null);
+
+    // Check for duplicate booking
+    const isNotDuplicate = await checkDuplicateBooking();
+    if (!isNotDuplicate) {
+      setIsProcessing(false);
+      return;
+    }
+
+    const newBookingId = 'RES-' + Math.random().toString(36).substr(2, 8).toUpperCase();
+    const cleanPhone = formData.phone.replace(/\D/g, '');
+
+    // Clean data before submitting
+    const bookingData = {
+      booking_id: newBookingId,
+      customer_name: formData.name.trim(),
+      customer_phone: cleanPhone,
+      customer_email: formData.email.trim().toLowerCase() || null,
+      booking_date: selectedDate.fullDate,
+      booking_time: selectedTime,
+      guests: Number(guests),
+      seating_zone: zones.find(z => z.id === selectedZone)?.name,
+      special_requests: formData.specialRequests.trim().slice(0, 500) || null,
+      status: 'pending'
+    };
+
+    try {
+      const { data, error } = await supabase
+        .from('bookings')
+        .insert([bookingData])
+        .select();
+
+      if (error) throw error;
+
+      console.log('✅ Booking saved:', data);
       setBookingId(newBookingId);
       setIsProcessing(false);
       setIsComplete(true);
-    }, 1500);
+    } catch (err) {
+      console.error('❌ Booking error:', err);
+      // Handle unique constraint violation (Postgres error code 23505)
+      if (err.code === '23505') {
+        setError('An active booking already exists for this phone number at this date and time.');
+      } else if (err.message?.includes('Too many bookings')) {
+        setError('Too many bookings from this phone number. Please try again tomorrow.');
+      } else {
+        setError('Failed to save booking. Please try again.');
+      }
+      setIsProcessing(false);
+    }
   };
 
   if (isComplete) {
@@ -227,6 +436,13 @@ export default function ReservationPage() {
             <span className="step-label">Confirm</span>
           </div>
         </div>
+
+        {/* GENERAL ERROR MESSAGE */}
+        {error && (
+          <div className="error-message">
+            ⚠️ {error}
+          </div>
+        )}
 
         <div className={`reservation-content ${animateStep ? 'animate-in' : 'animate-out'}`}>
           {/* STEP 1: Date & Time */}
@@ -351,43 +567,78 @@ export default function ReservationPage() {
               </div>
 
               <div className="form-section">
-                <div className="form-group">
-                  <label>Full Name *</label>
+                {/* Name Field Group */}
+                <div className={`res-field-group ${touched.name && fieldErrors.name ? 'has-error' : ''} ${touched.name && !fieldErrors.name && formData.name ? 'is-valid' : ''}`}>
+                  <label className="res-field-label">Full Name *</label>
                   <input
                     type="text"
+                    className="res-field-input"
                     placeholder="John Doe"
                     value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    onChange={(e) => handleInputChange('name', e)}
+                    onBlur={() => handleBlur('name')}
+                    required
                   />
+                  <div className="res-field-indicator"></div>
+                  {touched.name && fieldErrors.name ? (
+                    <span className="res-field-error-message">⚠️ {fieldErrors.name}</span>
+                  ) : (
+                    <small className="input-hint">Only letters and spaces (e.g., John Doe)</small>
+                  )}
                 </div>
+                
                 <div className="form-row">
-                  <div className="form-group">
-                    <label>Phone Number *</label>
+                  {/* Phone Field Group */}
+                  <div className={`res-field-group ${touched.phone && fieldErrors.phone ? 'has-error' : ''} ${touched.phone && !fieldErrors.phone && formData.phone ? 'is-valid' : ''}`}>
+                    <label className="res-field-label">Phone Number *</label>
                     <input
                       type="tel"
-                      placeholder="(555) 123-4567"
+                      className="res-field-input"
+                      placeholder="08012345678"
                       value={formData.phone}
-                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      onChange={(e) => handleInputChange('phone', e)}
+                      onBlur={() => handleBlur('phone')}
+                      required
                     />
+                    <div className="res-field-indicator"></div>
+                    {touched.phone && fieldErrors.phone ? (
+                      <span className="res-field-error-message">⚠️ {fieldErrors.phone}</span>
+                    ) : (
+                      <small className="input-hint">Numbers only (e.g., 08012345678)</small>
+                    )}
                   </div>
-                  <div className="form-group">
-                    <label>Email Address</label>
+                  
+                  {/* Email Field Group */}
+                  <div className={`res-field-group ${touched.email && fieldErrors.email ? 'has-error' : ''} ${touched.email && !fieldErrors.email && formData.email ? 'is-valid' : ''}`}>
+                    <label className="res-field-label">Email Address</label>
                     <input
                       type="email"
+                      className="res-field-input"
                       placeholder="john@example.com"
                       value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      onChange={(e) => handleInputChange('email', e)}
+                      onBlur={() => handleBlur('email')}
                     />
+                    <div className="res-field-indicator"></div>
+                    {touched.email && fieldErrors.email ? (
+                      <span className="res-field-error-message">⚠️ {fieldErrors.email}</span>
+                    ) : (
+                      <small className="input-hint">Optional but recommended for confirmation</small>
+                    )}
                   </div>
                 </div>
-                <div className="form-group">
-                  <label>Special Requests (Optional)</label>
+                
+                {/* Special Requests Field Group */}
+                <div className="res-field-group">
+                  <label className="res-field-label">Special Requests (Optional)</label>
                   <textarea
+                    className="res-field-input res-field-textarea"
                     placeholder="Dietary restrictions, allergies, special occasion..."
                     rows="3"
                     value={formData.specialRequests}
                     onChange={(e) => setFormData({ ...formData, specialRequests: e.target.value })}
                   />
+                  <div className="res-field-indicator"></div>
                 </div>
               </div>
 
@@ -419,7 +670,7 @@ export default function ReservationPage() {
                 </button>
                 <button 
                   className="btn-primary" 
-                  disabled={!formData.name || !formData.phone}
+                  disabled={isFormInvalid()}
                   onClick={handleNextStep}
                 >
                   Review Order →

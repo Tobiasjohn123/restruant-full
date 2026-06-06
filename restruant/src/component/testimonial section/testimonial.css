@@ -1,0 +1,723 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Jost:wght@300;400;500;600&display=swap');
+
+/* ==========================================================================
+   TESTIMONIAL SECTION — Ember & Grain
+   Premium dark aesthetic matching About page
+   Breakpoints: 480px / 768px / 1024px / 1280px+
+   ========================================================================== */
+
+:root {
+  --testi-gold: #C8A96A;
+  --testi-gold-light: #E8D5A3;
+  --testi-gold-dim: rgba(200, 169, 106, 0.15);
+  --testi-gold-glow: rgba(200, 169, 106, 0.3);
+  --testi-ember: #B85C2C;
+  --testi-cream: rgba(255, 248, 235, 0.92);
+  --testi-cream-muted: rgba(255, 248, 235, 0.55);
+  --testi-cream-faint: rgba(255, 248, 235, 0.18);
+  --testi-bg: #0A0908;
+  --testi-surface: rgba(255, 255, 255, 0.03);
+  --testi-surface-hover: rgba(255, 255, 255, 0.06);
+  --testi-border: rgba(200, 169, 106, 0.12);
+  --testi-border-hover: rgba(200, 169, 106, 0.36);
+  --testi-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ==========================================================================
+   SECTION WRAPPER
+   ========================================================================== */
+
+.testi-section {
+  position: relative;
+  padding: 140px 0 120px;
+  background: var(--testi-bg);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* ==========================================================================
+   AMBIENT BACKGROUND
+   ========================================================================== */
+
+.testi-orb {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.testi-orb--1 {
+  top: -10%;
+  left: -8%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(184, 92, 44, 0.12) 0%, transparent 70%);
+  filter: blur(100px);
+}
+
+.testi-orb--2 {
+  bottom: -15%;
+  right: -10%;
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(circle, rgba(200, 169, 106, 0.09) 0%, transparent 70%);
+  filter: blur(120px);
+}
+
+.testi-orb--3 {
+  top: 50%;
+  left: 40%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(200, 169, 106, 0.06) 0%, transparent 70%);
+  filter: blur(80px);
+}
+
+.testi-grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+}
+
+/* Top & bottom decorative rule lines */
+.testi-section::before,
+.testi-section::after {
+  content: '';
+  position: absolute;
+  left: 5%;
+  right: 5%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--testi-border), transparent);
+  z-index: 1;
+}
+.testi-section::before { top: 0; }
+.testi-section::after  { bottom: 0; }
+
+/* ==========================================================================
+   LAYOUT CONTAINER
+   ========================================================================== */
+
+.testi-container {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 2.5rem;
+  position: relative;
+  z-index: 2;
+}
+
+/* ==========================================================================
+   SECTION HEADER
+   ========================================================================== */
+
+.testi-header {
+  text-align: center;
+  margin-bottom: 72px;
+}
+
+.testi-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.4rem;
+}
+
+.testi-eyebrow-rule {
+  display: block;
+  width: 40px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--testi-gold));
+  opacity: 0.6;
+}
+
+.testi-eyebrow-rule--right {
+  background: linear-gradient(90deg, var(--testi-gold), transparent);
+}
+
+.testi-label {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+  color: var(--testi-gold);
+}
+
+.testi-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  font-weight: 300;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  color: var(--testi-cream);
+  margin: 0 0 1.2rem;
+}
+
+.testi-title em {
+  display: block;
+  font-style: italic;
+  color: var(--testi-gold);
+}
+
+.testi-lead {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 300;
+  line-height: 1.7;
+  color: var(--testi-cream-muted);
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+/* ==========================================================================
+   CAROUSEL WRAPPER & NAVIGATION
+   ========================================================================== */
+
+.testi-carousel-wrapper {
+  position: relative;
+  padding: 8px 0 56px;
+}
+
+/* Navigation Buttons */
+.testi-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(calc(-50% - 28px));
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(10, 9, 8, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--testi-border);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s var(--testi-ease);
+  z-index: 10;
+  color: var(--testi-gold);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+
+.testi-nav:hover {
+  background: rgba(200, 169, 106, 0.12);
+  border-color: var(--testi-gold);
+  transform: translateY(calc(-50% - 28px)) scale(1.08);
+  box-shadow: 0 6px 28px rgba(200, 169, 106, 0.2);
+}
+
+.testi-nav--prev { left: -28px; }
+.testi-nav--next { right: -28px; }
+
+/* Swiper Pagination */
+.testi-swiper {
+  padding-bottom: 48px !important;
+}
+
+.testi-swiper .swiper-pagination {
+  bottom: 4px;
+}
+
+.testi-swiper .swiper-pagination-bullet {
+  width: 6px;
+  height: 6px;
+  background: var(--testi-cream-faint);
+  opacity: 1;
+  transition: all 0.35s ease;
+}
+
+.testi-swiper .swiper-pagination-bullet-active {
+  background: var(--testi-gold);
+  width: 24px;
+  border-radius: 10px;
+}
+
+/* ==========================================================================
+   TESTIMONIAL CARD
+   ========================================================================== */
+
+.testi-card {
+  position: relative;
+  background: var(--testi-surface);
+  border: 1px solid var(--testi-border);
+  border-radius: 20px;
+  padding: 2.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  height: 100%;
+  overflow: hidden;
+  transition: transform 0.4s var(--testi-ease),
+              border-color 0.3s ease,
+              box-shadow 0.4s ease;
+  cursor: default;
+}
+
+.testi-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--testi-border-hover);
+  box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.5),
+              0 0 0 1px rgba(200, 169, 106, 0.08);
+}
+
+/* Shimmer sweep on hover */
+.testi-card-glow {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    transparent 40%,
+    rgba(200, 169, 106, 0.05) 50%,
+    transparent 60%
+  );
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.testi-card:hover .testi-card-glow {
+  opacity: 1;
+}
+
+/* Top accent line */
+.testi-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--testi-gold), transparent);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.testi-card:hover::before {
+  opacity: 0.6;
+}
+
+/* Decorative corner brackets */
+.testi-corner {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-color: rgba(200, 169, 106, 0.25);
+  border-style: solid;
+  border-width: 0;
+  transition: border-color 0.3s ease;
+}
+
+.testi-card:hover .testi-corner {
+  border-color: rgba(200, 169, 106, 0.5);
+}
+
+.testi-corner--tl {
+  top: 14px;
+  left: 14px;
+  border-top-width: 1.5px;
+  border-left-width: 1.5px;
+}
+
+.testi-corner--br {
+  bottom: 14px;
+  right: 14px;
+  border-bottom-width: 1.5px;
+  border-right-width: 1.5px;
+}
+
+/* ==========================================================================
+   CARD CONTENT
+   ========================================================================== */
+
+/* Opening quote mark */
+.testi-quote-mark {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 5rem;
+  font-weight: 300;
+  line-height: 0.7;
+  color: var(--testi-gold);
+  opacity: 0.25;
+  margin-bottom: 0.8rem;
+  display: block;
+  transition: opacity 0.3s ease;
+}
+
+.testi-card:hover .testi-quote-mark {
+  opacity: 0.5;
+}
+
+/* Stars */
+.testi-stars {
+  display: flex;
+  gap: 3px;
+  margin-bottom: 1.1rem;
+}
+
+.testi-star-filled {
+  color: var(--testi-gold);
+  font-size: 0.75rem;
+  letter-spacing: 1px;
+}
+
+.testi-star-empty {
+  color: rgba(255, 255, 255, 0.15);
+  font-size: 0.75rem;
+}
+
+/* Review text */
+.testi-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.05rem;
+  font-weight: 300;
+  font-style: italic;
+  line-height: 1.72;
+  color: var(--testi-cream-muted);
+  margin-bottom: 1.8rem;
+  flex-grow: 1;
+  transition: color 0.3s ease;
+}
+
+.testi-card:hover .testi-text {
+  color: var(--testi-cream);
+}
+
+/* Divider */
+.testi-divider {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, var(--testi-border), transparent);
+  margin-bottom: 1.4rem;
+}
+
+/* User row */
+.testi-user {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: auto;
+}
+
+.testi-avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1.5px solid rgba(200, 169, 106, 0.35);
+  flex-shrink: 0;
+  transition: border-color 0.3s ease;
+}
+
+.testi-card:hover .testi-avatar {
+  border-color: var(--testi-gold);
+}
+
+.testi-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.75);
+  transition: filter 0.3s ease;
+}
+
+.testi-card:hover .testi-avatar img {
+  filter: saturate(1);
+}
+
+.testi-user-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.testi-user-name {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--testi-cream);
+  margin: 0 0 0.2rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.testi-user-role {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 400;
+  color: var(--testi-gold);
+  margin: 0 0 0.2rem;
+  letter-spacing: 0.03em;
+}
+
+.testi-user-date {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.65rem;
+  color: var(--testi-cream-faint);
+  letter-spacing: 0.05em;
+}
+
+/* ==========================================================================
+   AGGREGATE RATING STRIP
+   ========================================================================== */
+
+.testi-aggregate {
+  margin-top: 80px;
+  padding: 2.4rem 3rem;
+  background: var(--testi-surface);
+  border: 1px solid var(--testi-border);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle inner glow */
+.testi-aggregate::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 60% 100% at 50% 100%, rgba(200, 169, 106, 0.06), transparent);
+  pointer-events: none;
+}
+
+.testi-aggregate-left {
+  display: flex;
+  align-items: center;
+  gap: 1.4rem;
+  flex-shrink: 0;
+}
+
+.testi-aggregate-score {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 3.8rem;
+  font-weight: 300;
+  line-height: 1;
+  color: var(--testi-gold);
+}
+
+.testi-aggregate-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.testi-aggregate-stars {
+  display: flex;
+  gap: 3px;
+}
+
+.testi-aggregate-count {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 400;
+  color: var(--testi-cream-muted);
+  letter-spacing: 0.04em;
+}
+
+/* Vertical divider */
+.testi-aggregate-sep {
+  width: 1px;
+  height: 60px;
+  background: linear-gradient(to bottom, transparent, var(--testi-border), transparent);
+  flex-shrink: 0;
+}
+
+.testi-aggregate-platforms {
+  display: flex;
+  gap: 2.5rem;
+  flex-wrap: wrap;
+}
+
+.testi-platform-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.testi-platform-name {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--testi-cream-faint);
+}
+
+.testi-platform-score {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.3rem;
+  font-weight: 400;
+  color: var(--testi-cream);
+}
+
+.testi-platform-stars {
+  display: flex;
+  gap: 2px;
+}
+
+.testi-platform-stars span {
+  font-size: 0.6rem;
+  color: var(--testi-gold);
+}
+
+/* ==========================================================================
+   BREAKPOINT: 1024px — Tablet Landscape
+   ========================================================================== */
+
+@media (max-width: 1024px) {
+  .testi-section {
+    padding: 100px 0 90px;
+  }
+
+  .testi-container {
+    padding: 0 2rem;
+  }
+
+  .testi-nav--prev { left: -18px; }
+  .testi-nav--next { right: -18px; }
+
+  .testi-aggregate {
+    padding: 2rem 2.2rem;
+    gap: 1.5rem;
+  }
+
+  .testi-aggregate-platforms {
+    gap: 1.8rem;
+  }
+}
+
+/* ==========================================================================
+   BREAKPOINT: 768px — Tablet Portrait
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  .testi-section {
+    padding: 80px 0 72px;
+  }
+
+  .testi-container {
+    padding: 0 1.5rem;
+  }
+
+  .testi-header {
+    margin-bottom: 52px;
+  }
+
+  .testi-title {
+    font-size: clamp(2rem, 6vw, 2.8rem);
+  }
+
+  .testi-nav {
+    display: none;
+  }
+
+  .testi-carousel-wrapper {
+    padding: 8px 0 52px;
+  }
+
+  /* Aggregate — stack vertically */
+  .testi-aggregate {
+    flex-direction: column;
+    text-align: center;
+    padding: 2rem 1.8rem;
+    gap: 1.6rem;
+  }
+
+  .testi-aggregate-left {
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .testi-aggregate-meta {
+    align-items: center;
+  }
+
+  .testi-aggregate-sep {
+    width: 80px;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--testi-border), transparent);
+  }
+
+  .testi-aggregate-platforms {
+    justify-content: center;
+    gap: 1.5rem;
+  }
+}
+
+/* ==========================================================================
+   BREAKPOINT: 480px — Mobile
+   ========================================================================== */
+
+@media (max-width: 480px) {
+  .testi-section {
+    padding: 64px 0 60px;
+  }
+
+  .testi-container {
+    padding: 0 1.1rem;
+  }
+
+  .testi-header {
+    margin-bottom: 40px;
+  }
+
+  .testi-title {
+    font-size: clamp(1.8rem, 8vw, 2.4rem);
+  }
+
+  .testi-lead {
+    font-size: 0.88rem;
+  }
+
+  .testi-card {
+    padding: 1.6rem 1.4rem;
+    border-radius: 16px;
+  }
+
+  .testi-quote-mark {
+    font-size: 4rem;
+  }
+
+  .testi-text {
+    font-size: 0.97rem;
+  }
+
+  .testi-aggregate {
+    padding: 1.6rem 1.2rem;
+    border-radius: 16px;
+  }
+
+  .testi-aggregate-score {
+    font-size: 3rem;
+  }
+
+  .testi-aggregate-platforms {
+    gap: 1rem;
+  }
+
+  .testi-platform-score {
+    font-size: 1.1rem;
+  }
+}
+
+/* ==========================================================================
+   TOUCH DEVICES — disable hover transforms
+   ========================================================================== */
+
+@media (hover: none) and (pointer: coarse) {
+  .testi-card:hover {
+    transform: none;
+  }
+  .testi-card:active {
+    transform: translateY(-3px);
+    border-color: var(--testi-border-hover);
+  }
+}

@@ -313,16 +313,7 @@ img                  { max-width: 100%; display: block; }
   text-stroke: 1px var(--burnt-caramel);
 }
 
-.hero-title {
-   font-size: 3.5rem;
-  font-weight: 700;
-  line-height: 1.2;
-  margin-bottom: 1.5rem;
-  font-family: var(--font-display2);
-  animation: enterTitle 1.1s 0.25s cubic-bezier(0.16,1,0.3,1) both;
-  color: #cbc8c0;
-  
-}
+ 
 
 .hero-subtitle {
   font-size: 1.125rem;

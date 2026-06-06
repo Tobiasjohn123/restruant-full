@@ -1,0 +1,856 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Jost:wght@300;400;500;600&display=swap');
+
+/* ==========================================================================
+   FOOTER — Ember & Grain
+   ========================================================================== */
+
+:root {
+  --ft-gold: #C8A96A;
+  --ft-gold-light: #E8D5A3;
+  --ft-gold-dim: rgba(200, 169, 106, 0.12);
+  --ft-gold-glow: rgba(200, 169, 106, 0.25);
+  --ft-ember: #B85C2C;
+  --ft-cream: rgba(255, 248, 235, 0.92);
+  --ft-cream-muted: rgba(255, 248, 235, 0.5);
+  --ft-cream-faint: rgba(255, 248, 235, 0.15);
+  --ft-bg: #070605;
+  --ft-bg-2: #0D0B09;
+  --ft-border: rgba(200, 169, 106, 0.1);
+  --ft-border-hover: rgba(200, 169, 106, 0.35);
+  --ft-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ==========================================================================
+   WRAPPER
+   ========================================================================== */
+
+.ft-footer {
+  position: relative;
+  background: var(--ft-bg);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* ==========================================================================
+   ANIMATED BACKGROUND
+   ========================================================================== */
+
+.ft-bg-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Large slow-moving ember orbs */
+.ft-orb {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.ft-orb--1 {
+  width: 800px;
+  height: 800px;
+  top: -300px;
+  left: -200px;
+  background: radial-gradient(circle, rgba(184, 92, 44, 0.1) 0%, transparent 65%);
+  filter: blur(120px);
+  animation: ftOrb1 25s ease-in-out infinite;
+}
+
+.ft-orb--2 {
+  width: 600px;
+  height: 600px;
+  bottom: -200px;
+  right: -150px;
+  background: radial-gradient(circle, rgba(200, 169, 106, 0.09) 0%, transparent 65%);
+  filter: blur(100px);
+  animation: ftOrb2 30s ease-in-out infinite;
+}
+
+.ft-orb--3 {
+  width: 400px;
+  height: 400px;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(184, 92, 44, 0.06) 0%, transparent 65%);
+  filter: blur(80px);
+  animation: ftOrb3 20s ease-in-out infinite;
+}
+
+@keyframes ftOrb1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(40px, -30px) scale(1.05); }
+  66%       { transform: translate(-20px, 20px) scale(0.97); }
+}
+
+@keyframes ftOrb2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  40%       { transform: translate(-30px, 25px) scale(1.04); }
+  70%       { transform: translate(20px, -15px) scale(0.96); }
+}
+
+@keyframes ftOrb3 {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); }
+  50%       { transform: translate(calc(-50% + 20px), -50%) scale(1.06); }
+}
+
+/* Grain texture */
+.ft-grain {
+  position: absolute;
+  inset: 0;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   CTA BAND — top of footer
+   ========================================================================== */
+
+.ft-cta-band {
+  position: relative;
+  z-index: 2;
+  padding: 80px 2.5rem;
+  text-align: center;
+  border-bottom: 1px solid var(--ft-border);
+}
+
+.ft-cta-band::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 70% 100% at 50% 100%, rgba(200, 169, 106, 0.05), transparent);
+  pointer-events: none;
+}
+
+.ft-cta-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.2rem;
+}
+
+.ft-cta-rule {
+  display: block;
+  width: 36px;
+  height: 1px;
+  opacity: 0.5;
+}
+
+.ft-cta-rule--left  { background: linear-gradient(90deg, transparent, var(--ft-gold)); }
+.ft-cta-rule--right { background: linear-gradient(90deg, var(--ft-gold), transparent); }
+
+.ft-cta-label {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--ft-gold);
+}
+
+.ft-cta-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.2rem, 5vw, 3.8rem);
+  font-weight: 300;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  color: var(--ft-cream);
+  margin: 0 0 1rem;
+}
+
+.ft-cta-title em {
+  font-style: italic;
+  color: var(--ft-gold);
+}
+
+.ft-cta-sub {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 300;
+  color: var(--ft-cream-muted);
+  margin: 0 auto 2.2rem;
+  max-width: 420px;
+  line-height: 1.7;
+}
+
+.ft-cta-actions {
+  display: flex;
+  gap: 0.9rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Buttons */
+.ft-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.8rem;
+  font-family: 'Jost', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 40px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.35s var(--ft-ease);
+  position: relative;
+  overflow: hidden;
+}
+
+.ft-btn::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+  transition: left 0.55s ease;
+}
+
+.ft-btn:hover::before { left: 100%; }
+
+.ft-btn--primary {
+  background: var(--ft-gold);
+  color: var(--ft-bg);
+}
+
+.ft-btn--primary:hover {
+  background: var(--ft-gold-light);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 28px var(--ft-gold-glow);
+}
+
+.ft-btn--ghost {
+  background: transparent;
+  color: var(--ft-cream-muted);
+  border: 1px solid var(--ft-border);
+}
+
+.ft-btn--ghost:hover {
+  border-color: var(--ft-gold);
+  color: var(--ft-gold);
+  transform: translateY(-3px);
+}
+
+/* ==========================================================================
+   MAIN FOOTER BODY
+   ========================================================================== */
+
+.ft-body {
+  position: relative;
+  z-index: 2;
+  padding: 80px 2.5rem 60px;
+}
+
+.ft-body-inner {
+  max-width: 1320px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.6fr 1fr 1fr 1.2fr;
+  gap: 60px;
+}
+
+/* ==========================================================================
+   BRAND COLUMN
+   ========================================================================== */
+
+.ft-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* Animated logo mark */
+.ft-logo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.4rem;
+  text-decoration: none;
+}
+
+.ft-logo-mark {
+  position: relative;
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
+}
+
+.ft-logo-mark svg {
+  width: 52px;
+  height: 52px;
+}
+
+/* Spinning outer ring */
+.ft-logo-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(200, 169, 106, 0.3);
+  animation: ftRingSpin 12s linear infinite;
+}
+
+.ft-logo-ring::before {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--ft-gold);
+}
+
+@keyframes ftRingSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.ft-logo-text-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.ft-logo-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: var(--ft-cream);
+  line-height: 1;
+}
+
+.ft-logo-tagline {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.58rem;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ft-gold);
+  opacity: 0.7;
+}
+
+.ft-brand-desc {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.83rem;
+  font-weight: 300;
+  line-height: 1.75;
+  color: var(--ft-cream-muted);
+  margin-bottom: 1.8rem;
+  max-width: 300px;
+}
+
+/* Social icons */
+.ft-socials {
+  display: flex;
+  gap: 0.6rem;
+  margin-bottom: 2rem;
+}
+
+.ft-social-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--ft-gold-dim);
+  border: 1px solid var(--ft-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ft-cream-muted);
+  text-decoration: none;
+  transition: all 0.3s var(--ft-ease);
+  position: relative;
+  overflow: hidden;
+}
+
+.ft-social-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--ft-gold);
+  border-radius: 50%;
+  transform: scale(0);
+  transition: transform 0.35s var(--ft-ease);
+}
+
+.ft-social-btn:hover::before { transform: scale(1); }
+
+.ft-social-btn svg {
+  position: relative;
+  z-index: 1;
+  transition: color 0.25s ease, transform 0.3s var(--ft-ease);
+}
+
+.ft-social-btn:hover svg {
+  color: var(--ft-bg);
+  transform: scale(1.15);
+}
+
+/* Est. badge */
+.ft-est-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.5rem 1rem;
+  background: var(--ft-gold-dim);
+  border: 1px solid var(--ft-border);
+  border-radius: 40px;
+  width: fit-content;
+}
+
+.ft-est-line {
+  width: 20px;
+  height: 1px;
+  background: var(--ft-gold);
+  opacity: 0.5;
+}
+
+.ft-est-text {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ft-gold);
+}
+
+/* ==========================================================================
+   NAV COLUMNS
+   ========================================================================== */
+
+.ft-col-label {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ft-gold);
+  margin-bottom: 1.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.ft-col-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--ft-border), transparent);
+}
+
+.ft-nav-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.ft-nav-list li a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  font-family: 'Jost', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 300;
+  color: var(--ft-cream-muted);
+  text-decoration: none;
+  padding: 0.45rem 0;
+  transition: color 0.25s ease, gap 0.3s var(--ft-ease), padding-left 0.3s var(--ft-ease);
+  position: relative;
+}
+
+/* Animated left tick on hover */
+.ft-nav-list li a::before {
+  content: '';
+  display: inline-block;
+  width: 0;
+  height: 1px;
+  background: var(--ft-gold);
+  margin-right: 0;
+  transition: width 0.3s var(--ft-ease), margin-right 0.3s var(--ft-ease);
+  vertical-align: middle;
+}
+
+.ft-nav-list li a:hover {
+  color: var(--ft-cream);
+  padding-left: 4px;
+}
+
+.ft-nav-list li a:hover::before {
+  width: 14px;
+  margin-right: 8px;
+}
+
+/* ==========================================================================
+   CONTACT COLUMN
+   ========================================================================== */
+
+.ft-contact-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.ft-contact-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+}
+
+.ft-contact-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--ft-gold-dim);
+  border: 1px solid var(--ft-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ft-gold);
+  flex-shrink: 0;
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+.ft-contact-item:hover .ft-contact-icon {
+  background: rgba(200, 169, 106, 0.18);
+  border-color: rgba(200, 169, 106, 0.4);
+}
+
+.ft-contact-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.ft-contact-text span {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 300;
+  color: var(--ft-cream-muted);
+  line-height: 1.55;
+  transition: color 0.25s ease;
+}
+
+.ft-contact-item:hover .ft-contact-text span {
+  color: var(--ft-cream);
+}
+
+.ft-contact-text a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Hours mini-preview */
+.ft-hours-preview {
+  margin-top: 1.6rem;
+  padding: 1.2rem;
+  background: var(--ft-gold-dim);
+  border: 1px solid var(--ft-border);
+  border-radius: 12px;
+}
+
+.ft-hours-preview-title {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ft-gold);
+  margin-bottom: 0.8rem;
+}
+
+.ft-hours-preview-row {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'Jost', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 300;
+  color: var(--ft-cream-muted);
+  padding: 0.3rem 0;
+  border-bottom: 1px solid rgba(200, 169, 106, 0.07);
+}
+
+.ft-hours-preview-row:last-child {
+  border-bottom: none;
+}
+
+.ft-hours-preview-row.is-today {
+  color: var(--ft-gold);
+}
+
+/* ==========================================================================
+   MARQUEE BAND
+   ========================================================================== */
+
+.ft-marquee-band {
+  position: relative;
+  z-index: 2;
+  border-top: 1px solid var(--ft-border);
+  border-bottom: 1px solid var(--ft-border);
+  padding: 18px 0;
+  overflow: hidden;
+  background: rgba(200, 169, 106, 0.025);
+}
+
+.ft-marquee-track {
+  display: flex;
+  gap: 0;
+  animation: ftMarquee 28s linear infinite;
+  white-space: nowrap;
+  will-change: transform;
+}
+
+.ft-marquee-band:hover .ft-marquee-track {
+  animation-play-state: paused;
+}
+
+@keyframes ftMarquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.ft-marquee-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.4rem;
+  padding: 0 2rem;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.9rem;
+  font-weight: 300;
+  font-style: italic;
+  letter-spacing: 0.06em;
+  color: var(--ft-cream-faint);
+  flex-shrink: 0;
+}
+
+.ft-marquee-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--ft-gold);
+  opacity: 0.5;
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   BOTTOM BAR
+   ========================================================================== */
+
+.ft-bottom {
+  position: relative;
+  z-index: 2;
+  padding: 24px 2.5rem;
+  border-top: 1px solid var(--ft-border);
+}
+
+.ft-bottom-inner {
+  max-width: 1320px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.ft-copyright {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 300;
+  color: var(--ft-cream-faint);
+  letter-spacing: 0.04em;
+}
+
+.ft-copyright span {
+  color: var(--ft-gold);
+  opacity: 0.7;
+}
+
+.ft-legal-links {
+  display: flex;
+  align-items: center;
+  gap: 1.8rem;
+}
+
+.ft-legal-links a {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  color: var(--ft-cream-faint);
+  text-decoration: none;
+  transition: color 0.25s ease;
+}
+
+.ft-legal-links a:hover {
+  color: var(--ft-gold);
+}
+
+.ft-legal-sep {
+  width: 1px;
+  height: 12px;
+  background: var(--ft-border);
+}
+
+/* Animated flame signature */
+.ft-signature {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'Jost', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  color: var(--ft-cream-faint);
+}
+
+.ft-flame {
+  display: inline-block;
+  animation: ftFlame 1.8s ease-in-out infinite;
+  font-size: 0.9rem;
+}
+
+@keyframes ftFlame {
+  0%, 100% { transform: scaleY(1) rotate(-3deg);   filter: brightness(1); }
+  25%       { transform: scaleY(1.15) rotate(2deg); filter: brightness(1.3); }
+  50%       { transform: scaleY(0.95) rotate(-1deg); filter: brightness(0.9); }
+  75%       { transform: scaleY(1.1) rotate(3deg);  filter: brightness(1.2); }
+}
+
+/* ==========================================================================
+   BREAKPOINT: 1024px
+   ========================================================================== */
+
+@media (max-width: 1024px) {
+  .ft-body-inner {
+    grid-template-columns: 1fr 1fr;
+    gap: 48px 40px;
+  }
+
+  .ft-brand {
+    grid-column: span 2;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 3rem;
+    flex-wrap: wrap;
+  }
+
+  .ft-brand-desc {
+    max-width: 360px;
+  }
+}
+
+/* ==========================================================================
+   BREAKPOINT: 768px
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  .ft-cta-band {
+    padding: 60px 1.5rem;
+  }
+
+  .ft-body {
+    padding: 60px 1.5rem 48px;
+  }
+
+  .ft-body-inner {
+    grid-template-columns: 1fr 1fr;
+    gap: 40px 28px;
+  }
+
+  .ft-brand {
+    grid-column: span 2;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .ft-bottom {
+    padding: 20px 1.5rem;
+  }
+
+  .ft-bottom-inner {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1rem;
+  }
+
+  .ft-signature { display: none; }
+}
+
+/* ==========================================================================
+   BREAKPOINT: 480px
+   ========================================================================== */
+
+@media (max-width: 480px) {
+  .ft-cta-band {
+    padding: 48px 1.1rem;
+  }
+
+  .ft-cta-title {
+    font-size: clamp(1.8rem, 7vw, 2.4rem);
+  }
+
+  .ft-cta-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .ft-btn {
+    width: 100%;
+    max-width: 280px;
+    justify-content: center;
+  }
+
+  .ft-body {
+    padding: 48px 1.1rem 40px;
+  }
+
+  .ft-body-inner {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+
+  .ft-brand {
+    grid-column: span 1;
+  }
+
+  .ft-legal-links {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  .ft-legal-sep { display: none; }
+
+  .ft-marquee-item {
+    font-size: 0.8rem;
+  }
+}
+
+/* ==========================================================================
+   TOUCH DEVICES
+   ========================================================================== */
+
+@media (hover: none) and (pointer: coarse) {
+  .ft-btn:hover {
+    transform: none;
+  }
+  .ft-btn:active {
+    transform: translateY(-2px);
+  }
+  .ft-social-btn:hover svg {
+    transform: none;
+  }
+}
