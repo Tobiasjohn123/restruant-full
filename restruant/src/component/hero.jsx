@@ -104,7 +104,7 @@ export default function Hero() {
           <span className={`hero-label ${animationReady ? 'animate' : ''}`}>
             Ember & Grain
           </span>
-          <h1 className={`hero-title ${animationReady ? 'animate' : ''}`}>
+          <h1 className={`hero-t ${animationReady ? 'animate' : ''}`}>
             A warm dining experience fueled by craft and comfort.
           </h1>
           <p className={`hero-subtitle ${animationReady ? 'animate' : ''}`}>

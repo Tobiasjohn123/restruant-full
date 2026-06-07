@@ -40,6 +40,7 @@ h1,h2,h3,h4,h5,h6 {
   line-height: 1.2;
 }
 
+
 a {
   color: var(--gold);
   text-decoration: none;
@@ -314,9 +315,9 @@ img                  { max-width: 100%; display: block; }
   text-stroke: 1px var(--burnt-caramel);
 }
 
- .hero-title
+ .hero-t
  {
-  font-size: 0rem;
+  font-size: 2.2rem;
   font-family: var(--font-display);
  }
 

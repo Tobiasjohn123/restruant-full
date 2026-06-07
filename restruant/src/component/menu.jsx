@@ -4,8 +4,10 @@ import { menuData, categories } from './data/foods';
 import { useCart } from './cartcontext.jsx';
 import { useLoading } from './loadingContent.jsx';
 import LoadingSkeleton from './LoadingSkeleton';
+import { useNavigate } from 'react-router-dom';
 
 export default function MenuSection() {
+  const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedItem, setSelectedItem] = useState(null);
   const [filteredItems, setFilteredItems] = useState([]);
@@ -54,22 +56,25 @@ export default function MenuSection() {
     }, 500);
   };
 
+  const handleOrder = (item) => {
+    addToCart(item);
+  };
+
   const handleOrderFromModal = (item) => {
     addToCart(item);
     setSelectedItem(null);
   };
 
   const handleBookFromModal = (item) => {
-    alert(`📅 Booking table for ${item.name}. We'll contact you shortly!`);
+    // Close the modal
     setSelectedItem(null);
-  };
-
-  const handleOrder = (item) => {
-    addToCart(item);
+    // Navigate to reserve page
+    navigate('/reserve');
   };
 
   const handleBook = (item) => {
-    alert(`📅 Booking table for ${item.name}. We'll contact you shortly!`);
+    // Navigate to reserve page
+    navigate('/reserve');
   };
 
   const closeModal = () => {
@@ -180,6 +185,7 @@ export default function MenuSection() {
                       >
                         🍽️ Order Now
                       </button>
+                      
                       <button 
                         className="btn-book-large" 
                         onClick={() => handleBookFromModal(selectedItem)}
