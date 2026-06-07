@@ -12,6 +12,7 @@ import Testimonials from './component/testimonial section/testimonial';
 import Location from './component/location/location';
 import Footer from './component/footer/footer';
 import AdminDashboard from './component/admindashboard/admin';
+import ScrollButtons from './component/scrollbutton/scroll';
 
 function HomePage() {
   return (
@@ -22,6 +23,7 @@ function HomePage() {
       <Testimonials />
       <Location />
       <Footer />
+      <ScrollButtons />
     </>
   );
 }
