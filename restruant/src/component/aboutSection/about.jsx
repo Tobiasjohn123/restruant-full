@@ -1,4 +1,4 @@
-// About.jsx - Fixed version with no touch blocking
+// About.jsx - With scroll-triggered animations that replay every time
 import React, { useEffect, useRef } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Autoplay } from 'swiper/modules';
@@ -79,7 +79,7 @@ const IMGS = {
     {
       img: 'https://images.unsplash.com/photo-1484723091739-30a097e8f929?w=700&q=80',
       title: 'Breakfast Ritual', subtitle: 'Morning Offering',
-      body: 'Begin your day with a slow, intentional breakfast crafted from the morning\'s freshest haul.'
+      body: "Begin your day with a slow, intentional breakfast crafted from the morning's freshest haul."
     },
   ],
   gallery: [
@@ -102,77 +102,84 @@ export default function About() {
   const sectionRef = useRef(null);
   const floatingCardsRef = useRef([]);
 
-  // Refs for custom navigation buttons
   const expPrevRef = useRef(null);
   const expNextRef = useRef(null);
   const galleryPrevRef = useRef(null);
   const galleryNextRef = useRef(null);
 
-  /* ── Section reveal observer ── */
+  /* ── Scroll-triggered animations that REPLAY every time ── */
   useEffect(() => {
-    const io = new IntersectionObserver(
+    const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach(e => {
-          if (e.isIntersecting) e.target.classList.add('section-visible');
+        entries.forEach(entry => {
+          const section = entry.target;
+
+          if (entry.isIntersecting) {
+            // Section entering viewport — remove class, force reflow, re-add to restart animations
+            section.classList.remove('is-visible');
+            void section.offsetHeight; // force reflow
+            section.classList.add('is-visible');
+
+            // Also replay all animatable children
+            const animChildren = section.querySelectorAll('.anim-child');
+            animChildren.forEach(el => {
+              el.classList.remove('anim-child--played');
+              void el.offsetHeight;
+              el.classList.add('anim-child--played');
+            });
+          } else {
+            // Section leaving viewport — strip class so next entry replays
+            section.classList.remove('is-visible');
+            section.querySelectorAll('.anim-child').forEach(el => {
+              el.classList.remove('anim-child--played');
+            });
+          }
         });
       },
       { threshold: 0.12 }
     );
-    document.querySelectorAll('.reveal-section').forEach(el => io.observe(el));
-    return () => io.disconnect();
+
+    document.querySelectorAll('.scroll-section').forEach(el => observer.observe(el));
+
+    return () => observer.disconnect();
   }, []);
 
-  /* ── 3D tilt for desktop ONLY ── */
+  /* ── 3D tilt — desktop/mouse only ── */
   useEffect(() => {
-    // Check if device is mobile/touch - if yes, completely skip the effect
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    
-    // Also check for touch support
-    if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
-      return; // Exit on any touch device
-    }
-    
+    if ('ontouchstart' in window || navigator.maxTouchPoints > 0) return;
+
     const cleanup = [];
-    
+
     floatingCardsRef.current.forEach(card => {
       if (!card) return;
-      
       let rafId = null;
-      
-      const applyTilt = (x, y) => {
+
+      const onMouseMove = (e) => {
         if (rafId) cancelAnimationFrame(rafId);
-        
         rafId = requestAnimationFrame(() => {
-          const rotateY = x * 13;
-          const rotateX = y * -9;
-          card.style.transform = `perspective(1200px) rotateY(${rotateY}deg) rotateX(${rotateX}deg) translateY(-10px)`;
+          const rect = card.getBoundingClientRect();
+          const x = (e.clientX - rect.left) / rect.width - 0.5;
+          const y = (e.clientY - rect.top) / rect.height - 0.5;
+          card.style.transition = 'none';
+          card.style.transform = `perspective(1200px) rotateY(${x * 13}deg) rotateX(${y * -9}deg) translateY(-10px)`;
         });
       };
-      
-      const onMouseMove = (e) => {
-        const rect = card.getBoundingClientRect();
-        const x = (e.clientX - rect.left) / rect.width - 0.5;
-        const y = (e.clientY - rect.top) / rect.height - 0.5;
-        card.style.transition = 'none';
-        applyTilt(x, y);
-      };
-      
+
       const onMouseLeave = () => {
         if (rafId) cancelAnimationFrame(rafId);
         card.style.transition = 'transform 0.7s cubic-bezier(0.22,1,0.36,1)';
         card.style.transform = 'perspective(1200px) rotateY(0deg) rotateX(0deg) translateY(0)';
       };
-      
+
       card.addEventListener('mousemove', onMouseMove);
       card.addEventListener('mouseleave', onMouseLeave);
-      
       cleanup.push(() => {
         card.removeEventListener('mousemove', onMouseMove);
         card.removeEventListener('mouseleave', onMouseLeave);
         if (rafId) cancelAnimationFrame(rafId);
       });
     });
-    
+
     return () => cleanup.forEach(fn => fn());
   }, []);
 
@@ -187,9 +194,9 @@ export default function About() {
       <div className="bg-grain" />
 
       {/* ══════════════════════════════════════
-          HERO — fullscreen cinematic mosaic
+          HERO
       ══════════════════════════════════════ */}
-      <div className="about-hero">
+      <div className="about-hero scroll-section">
         <div className="hero-bg-mosaic">
           {IMGS.hero.map((src, i) => (
             <div className="hero-bg-mosaic__cell" key={i}>
@@ -200,35 +207,35 @@ export default function About() {
         <div className="hero-overlay" />
 
         <div className="hero-content">
-          <div className="hero-eyebrow">
+          <div className="hero-eyebrow anim-child anim-child--fade-up" style={{ '--delay': '0.05s' }}>
             <span className="eyebrow-rule" />
             <span className="eyebrow-text">Est. 2018 · Fine Dining</span>
             <span className="eyebrow-rule" />
           </div>
 
-          <h1 className="hero-title">
+          <h1 className="hero-title anim-child anim-child--fade-up" style={{ '--delay': '0.2s' }}>
             Where Fire<br />
             <em>Meets Artistry</em>
           </h1>
 
-          <p className="hero-lead">
+          <p className="hero-lead anim-child anim-child--fade-up" style={{ '--delay': '0.38s' }}>
             A sanctuary for those who appreciate the craft of fine dining —
             where smoke, flame, and passion create unforgettable moments.
           </p>
 
-          <div className="hero-actions">
+          <div className="hero-actions anim-child anim-child--fade-up" style={{ '--delay': '0.52s' }}>
             <a href="/reserve" className="btn btn--primary">Reserve a Table</a>
             <a href="/menu" className="btn btn--ghost">Explore Our Menu</a>
           </div>
         </div>
 
-        <div className="hero-scroll-cue">
+        <div className="hero-scroll-cue anim-child anim-child--fade-up" style={{ '--delay': '0.7s' }}>
           <span className="scroll-text">Scroll</span>
         </div>
       </div>
 
       {/* ══════════════════════════════════════
-          SCROLLING IMAGE STRIP
+          IMAGE STRIP
       ══════════════════════════════════════ */}
       <div className="image-strip" aria-hidden="true">
         <div className="image-strip__track">
@@ -245,71 +252,50 @@ export default function About() {
         {/* ══════════════════════════════════════
             STORY
         ══════════════════════════════════════ */}
-        <div className="story-section reveal-section" style={{ marginBottom: '130px' }}>
+        <div className="story-section scroll-section" style={{ marginBottom: '130px' }}>
           <div className="story-grid">
             <div className="story-content">
-              <p className="label-tag reveal-child">Our Story</p>
-              <h2 className="section-title reveal-child">
+              <p className="label-tag anim-child anim-child--fade-up" style={{ '--delay': '0s' }}>Our Story</p>
+              <h2 className="section-title anim-child anim-child--fade-up" style={{ '--delay': '0.1s' }}>
                 Built Through Fire,<br /><em>Crafted Through Passion</em>
               </h2>
-              <div className="prose-block reveal-child">
-                <p>Ember & Grain began with a simple belief — dining should be more than a meal. It should feel immersive, emotional, and unforgettable.</p>
-                <p>What started as an experimental fire-driven kitchen quickly evolved into a destination where craftsmanship, hospitality, and culinary artistry converge.</p>
-                <p>Every ingredient is carefully selected, every dish refined through countless iterations, every detail considered to create an experience guests carry long after leaving.</p>
-                <p>Today, Ember & Grain stands as a celebration of smoke, fire, texture, and human connection — where modern technique meets timeless tradition.</p>
+              <div className="prose-block">
+                <p className="anim-child anim-child--fade-right" style={{ '--delay': '0.15s' }}>Ember & Grain began with a simple belief — dining should be more than a meal. It should feel immersive, emotional, and unforgettable.</p>
+                <p className="anim-child anim-child--fade-right" style={{ '--delay': '0.22s' }}>What started as an experimental fire-driven kitchen quickly evolved into a destination where craftsmanship, hospitality, and culinary artistry converge.</p>
+                <p className="anim-child anim-child--fade-right" style={{ '--delay': '0.29s' }}>Every ingredient is carefully selected, every dish refined through countless iterations, every detail considered to create an experience guests carry long after leaving.</p>
+                <p className="anim-child anim-child--fade-right" style={{ '--delay': '0.36s' }}>Today, Ember & Grain stands as a celebration of smoke, fire, texture, and human connection — where modern technique meets timeless tradition.</p>
               </div>
-              
-              {/* TIMELINE - Glass Container Block */}
-              <div className="timeline-container reveal-child">
+
+              {/* TIMELINE */}
+              <div className="timeline-container anim-child anim-child--fade-up" style={{ '--delay': '0.4s' }}>
                 <div className="timeline-glass-block">
                   <div className="timeline-header">
-                    <span className="timeline-badge">Our Journey</span>
-                    <h3 className="timeline-heading">Milestones</h3>
+                    <span className="timeline-badge anim-child anim-child--fade-up" style={{ '--delay': '0.38s' }}>Our Journey</span>
+                    <h3 className="timeline-heading anim-child anim-child--fade-up" style={{ '--delay': '0.44s' }}>Milestones</h3>
                   </div>
-                  
                   <div className="timeline-cards">
-                    <div className="timeline-card">
-                      <div className="timeline-card__glow" />
-                      <div className="timeline-card__content">
-                        <span className="timeline-year">2018</span>
-                        <span className="timeline-label">First Concept</span>
-                        <p className="timeline-desc">The vision of Ember & Grain was born in a small experimental kitchen.</p>
+                    {[
+                      { year: '2018', label: 'First Concept', desc: 'The vision of Ember & Grain was born in a small experimental kitchen.' },
+                      { year: '2021', label: 'Grand Opening', desc: 'Doors opened to the public, receiving immediate acclaim.' },
+                      { year: '2023', label: 'James Beard Award', desc: 'Recognized for culinary excellence and innovation.' },
+                      { year: '2024', label: 'Premium Experience', desc: "Launched the exclusive Chef's Table journey." },
+                    ].map(({ year, label, desc }, i) => (
+                      <div className={`timeline-card anim-child anim-child--scale-in`} style={{ '--delay': `${0.45 + i * 0.08}s` }} key={year}>
+                        <div className="timeline-card__glow" />
+                        <div className="timeline-card__content">
+                          <span className="timeline-year">{year}</span>
+                          <span className="timeline-label">{label}</span>
+                          <p className="timeline-desc">{desc}</p>
+                        </div>
                       </div>
-                    </div>
-                    
-                    <div className="timeline-card">
-                      <div className="timeline-card__glow" />
-                      <div className="timeline-card__content">
-                        <span className="timeline-year">2021</span>
-                        <span className="timeline-label">Grand Opening</span>
-                        <p className="timeline-desc">Doors opened to the public, receiving immediate acclaim.</p>
-                      </div>
-                    </div>
-                    
-                    <div className="timeline-card">
-                      <div className="timeline-card__glow" />
-                      <div className="timeline-card__content">
-                        <span className="timeline-year">2023</span>
-                        <span className="timeline-label">James Beard Award</span>
-                        <p className="timeline-desc">Recognized for culinary excellence and innovation.</p>
-                      </div>
-                    </div>
-                    
-                    <div className="timeline-card">
-                      <div className="timeline-card__glow" />
-                      <div className="timeline-card__content">
-                        <span className="timeline-year">2024</span>
-                        <span className="timeline-label">Premium Experience</span>
-                        <p className="timeline-desc">Launched the exclusive Chef's Table journey.</p>
-                      </div>
-                    </div>
+                    ))}
                   </div>
                 </div>
               </div>
             </div>
-            
-            <div className="story-media reveal-child">
-              <div className="floating-frame" ref={setTiltRef(0)}>
+
+            <div className="story-media">
+              <div className="floating-frame anim-child anim-child--image-reveal" style={{ '--delay': '0.2s' }} ref={setTiltRef(0)}>
                 <img src={IMGS.story} alt="The dining room at Ember & Grain" />
                 <div className="deco-border" />
                 <div className="deco-corner deco-corner--tl" />
@@ -317,7 +303,7 @@ export default function About() {
                 <div className="deco-corner deco-corner--bl" />
                 <div className="deco-corner deco-corner--br" />
               </div>
-              <p className="frame-cap">The Dining Room</p>
+              <p className="frame-cap anim-child anim-child--fade-up" style={{ '--delay': '0.5s' }}>The Dining Room</p>
             </div>
           </div>
         </div>
@@ -325,9 +311,13 @@ export default function About() {
         {/* ══════════════════════════════════════
             TRIPTYCH
         ══════════════════════════════════════ */}
-        <div className="triptych reveal-section" style={{ marginBottom: '130px' }}>
+        <div className="triptych scroll-section" style={{ marginBottom: '130px' }}>
           {IMGS.triptych.map((cell, i) => (
-            <div className={`triptych__cell${cell.tall ? ' triptych__cell--tall' : ''}`} key={i}>
+            <div
+              className={`triptych__cell${cell.tall ? ' triptych__cell--tall' : ''} anim-child anim-child--image-reveal`}
+              style={{ '--delay': `${i * 0.1}s` }}
+              key={i}
+            >
               <img src={cell.src} alt={cell.label} />
               <div className="triptych__cell-overlay">
                 <span className="triptych__cell-label">{cell.label}</span>
@@ -339,11 +329,11 @@ export default function About() {
         {/* ══════════════════════════════════════
             PHILOSOPHY
         ══════════════════════════════════════ */}
-        <div className="philosophy-section reveal-section">
+        <div className="philosophy-section scroll-section">
           <div className="section-header">
-            <p className="label-tag">Our Philosophy</p>
-            <h2 className="section-title">The Four Pillars</h2>
-            <p className="section-lead">Guiding principles that define every aspect of the Ember & Grain experience.</p>
+            <p className="label-tag anim-child anim-child--fade-up" style={{ '--delay': '0s' }}>Our Philosophy</p>
+            <h2 className="section-title anim-child anim-child--fade-up" style={{ '--delay': '0.1s' }}>The Four Pillars</h2>
+            <p className="section-lead anim-child anim-child--fade-up" style={{ '--delay': '0.2s' }}>Guiding principles that define every aspect of the Ember & Grain experience.</p>
           </div>
           <div className="pillars-grid">
             {[
@@ -351,8 +341,8 @@ export default function About() {
               { icon: '🌿', num: '02', title: 'Farm to Table', body: 'Partnership with local farmers ensures peak freshness and sustains the community we call home.' },
               { icon: '🎨', num: '03', title: 'Artful Plating', body: 'Every plate is a canvas, meticulously composed to delight both the eye and the palate.' },
               { icon: '🤝', num: '04', title: 'Community First', body: 'We believe in warmth, inclusion, and giving back to the people and land that nourish us.' },
-            ].map(({ icon, num, title, body }) => (
-              <div className="pillar-card" key={title}>
+            ].map(({ icon, num, title, body }, i) => (
+              <div className="pillar-card anim-child anim-child--scale-in" style={{ '--delay': `${0.05 + i * 0.08}s` }} key={title}>
                 <div className="pillar-number">{num}</div>
                 <span className="pillar-icon">{icon}</span>
                 <h3>{title}</h3>
@@ -366,12 +356,17 @@ export default function About() {
         {/* ══════════════════════════════════════
             CHEF
         ══════════════════════════════════════ */}
-        <div className="chef-section reveal-section">
+        <div className="chef-section scroll-section">
           <div className="chef-grid">
             <div className="chef-media">
               <div className="chef-images">
                 {IMGS.chef.map((src, i) => (
-                  <div className="floating-frame" key={i} ref={setTiltRef(i + 1)}>
+                  <div
+                    className="floating-frame anim-child anim-child--image-reveal"
+                    style={{ '--delay': `${i * 0.12}s` }}
+                    key={i}
+                    ref={setTiltRef(i + 1)}
+                  >
                     <img src={src} alt={i === 0 ? 'Executive Chef Michael Chen' : 'Chef at work'} />
                     <div className="deco-border" />
                     {i === 0 && (
@@ -383,23 +378,25 @@ export default function About() {
                   </div>
                 ))}
               </div>
-              <p className="frame-cap" style={{ marginTop: '1rem' }}>Executive Chef</p>
+              <p className="frame-cap anim-child anim-child--fade-up" style={{ '--delay': '0.4s', marginTop: '1rem' }}>Executive Chef</p>
             </div>
 
             <div className="chef-content">
-              <p className="label-tag reveal-child">Meet the Chef</p>
-              <h2 className="section-title reveal-child">Chef Michael<br /><em>Chen</em></h2>
-              <div className="prose-block reveal-child">
-                <p>With over 18 years in Michelin-starred kitchens across Paris, Tokyo, and New York, Chef Michael brings a rare global perspective to Ember & Grain.</p>
-                <p>His philosophy is simple: honour the ingredient, master the fire, let the smoke tell the story.</p>
+              <p className="label-tag anim-child anim-child--fade-up" style={{ '--delay': '0s' }}>Meet the Chef</p>
+              <h2 className="section-title anim-child anim-child--fade-up" style={{ '--delay': '0.1s' }}>
+                Chef Michael<br /><em>Chen</em>
+              </h2>
+              <div className="prose-block">
+                <p className="anim-child anim-child--fade-right" style={{ '--delay': '0.18s' }}>With over 18 years in Michelin-starred kitchens across Paris, Tokyo, and New York, Chef Michael brings a rare global perspective to Ember & Grain.</p>
+                <p className="anim-child anim-child--fade-right" style={{ '--delay': '0.25s' }}>His philosophy is simple: honour the ingredient, master the fire, let the smoke tell the story.</p>
               </div>
-              <div className="awards-row reveal-child">
+              <div className="awards-row">
                 {[
                   { medal: '🏆', title: 'James Beard Award Winner', sub: 'Best Chef · 2023' },
                   { medal: '⭐', title: 'Michelin Star Recognition', sub: 'Fine Dining · 2022' },
                   { medal: '🌿', title: 'Sustainability Champion', sub: 'Green Table Award · 2024' },
-                ].map(({ medal, title, sub }) => (
-                  <div className="award-badge" key={title}>
+                ].map(({ medal, title, sub }, i) => (
+                  <div className="award-badge anim-child anim-child--fade-left" style={{ '--delay': `${0.3 + i * 0.1}s` }} key={title}>
                     <div className="award-medal">{medal}</div>
                     <div>
                       <strong>{title}</strong>
@@ -408,7 +405,7 @@ export default function About() {
                   </div>
                 ))}
               </div>
-              <blockquote className="chef-quote reveal-child">
+              <blockquote className="chef-quote anim-child anim-child--fade-up" style={{ '--delay': '0.6s' }}>
                 "Cooking is love made visible — and fire is its most honest translator."
               </blockquote>
             </div>
@@ -418,15 +415,15 @@ export default function About() {
         {/* ══════════════════════════════════════
             STATS
         ══════════════════════════════════════ */}
-        <div className="stats-section reveal-section">
+        <div className="stats-section scroll-section">
           <div className="stats-inner">
             {[
               { n: '8+', l: 'Years of Excellence' },
               { n: '50+', l: 'Signature Dishes' },
               { n: '100%', l: 'Locally Sourced' },
               { n: '15k+', l: 'Happy Guests' },
-            ].map(({ n, l }) => (
-              <div className="stat-item" key={l}>
+            ].map(({ n, l }, i) => (
+              <div className="stat-item anim-child anim-child--fade-up" style={{ '--delay': `${i * 0.1}s` }} key={l}>
                 <span className="stat-num">{n}</span>
                 <span className="stat-label">{l}</span>
               </div>
@@ -437,15 +434,23 @@ export default function About() {
         {/* ══════════════════════════════════════
             BENTO GALLERY
         ══════════════════════════════════════ */}
-        <div className="bento-section reveal-section">
+        <div className="bento-section scroll-section">
           <div className="section-header">
-            <p className="label-tag">The Space</p>
-            <h2 className="section-title">Every Corner,<br /><em>A Story</em></h2>
-            <p className="section-lead">Explore the textures, light, and craft that make Ember & Grain unmistakably itself.</p>
+            <p className="label-tag anim-child anim-child--fade-up" style={{ '--delay': '0s' }}>The Space</p>
+            <h2 className="section-title anim-child anim-child--fade-up" style={{ '--delay': '0.1s' }}>
+              Every Corner,<br /><em>A Story</em>
+            </h2>
+            <p className="section-lead anim-child anim-child--fade-up" style={{ '--delay': '0.2s' }}>
+              Explore the textures, light, and craft that make Ember & Grain unmistakably itself.
+            </p>
           </div>
           <div className="bento-grid">
             {IMGS.bento.map((cell, i) => (
-              <div className="bento-cell" key={i}>
+              <div
+                className="bento-cell anim-child anim-child--scale-in"
+                style={{ '--delay': `${0.05 + i * 0.06}s` }}
+                key={i}
+              >
                 <img src={cell.src} alt={cell.label} />
                 <div className="bento-overlay">
                   <span className="bento-caption">{cell.label}</span>
@@ -458,12 +463,12 @@ export default function About() {
         {/* ══════════════════════════════════════
             EXPERIENCE CAROUSEL
         ══════════════════════════════════════ */}
-        <div className="experience-section reveal-section">
+        <div className="experience-section scroll-section">
           <div className="section-header">
-            <p className="label-tag">The Experience</p>
-            <h2 className="section-title">A Multi-Sensory Journey</h2>
+            <p className="label-tag anim-child anim-child--fade-up" style={{ '--delay': '0s' }}>The Experience</p>
+            <h2 className="section-title anim-child anim-child--fade-up" style={{ '--delay': '0.1s' }}>A Multi-Sensory Journey</h2>
           </div>
-          <div className="carousel-glass-container" style={{ position: 'relative' }}>
+          <div className="carousel-glass-container anim-child anim-child--fade-up" style={{ '--delay': '0.25s', position: 'relative' }}>
             <Swiper
               modules={[Navigation, Pagination, Autoplay]}
               spaceBetween={22}
@@ -503,17 +508,11 @@ export default function About() {
                 </SwiperSlide>
               ))}
             </Swiper>
-            
-            {/* Custom navigation buttons for Experience */}
             <button className="custom-nav custom-nav--prev" ref={expPrevRef}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
             </button>
             <button className="custom-nav custom-nav--next" ref={expNextRef}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M9 18L15 12L9 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M9 18L15 12L9 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
             </button>
           </div>
         </div>
@@ -521,12 +520,12 @@ export default function About() {
         {/* ══════════════════════════════════════
             GALLERY CAROUSEL
         ══════════════════════════════════════ */}
-        <div className="gallery-section reveal-section">
+        <div className="gallery-section scroll-section">
           <div className="section-header">
-            <p className="label-tag">Visual Journey</p>
-            <h2 className="section-title">Behind the Scenes</h2>
+            <p className="label-tag anim-child anim-child--fade-up" style={{ '--delay': '0s' }}>Visual Journey</p>
+            <h2 className="section-title anim-child anim-child--fade-up" style={{ '--delay': '0.1s' }}>Behind the Scenes</h2>
           </div>
-          <div className="carousel-glass-container" style={{ position: 'relative' }}>
+          <div className="carousel-glass-container anim-child anim-child--fade-up" style={{ '--delay': '0.25s', position: 'relative' }}>
             <Swiper
               modules={[Navigation, Pagination, Autoplay]}
               spaceBetween={14}
@@ -560,17 +559,11 @@ export default function About() {
                 </SwiperSlide>
               ))}
             </Swiper>
-            
-            {/* Custom navigation buttons for Gallery */}
             <button className="custom-nav custom-nav--prev" ref={galleryPrevRef}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
             </button>
             <button className="custom-nav custom-nav--next" ref={galleryNextRef}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M9 18L15 12L9 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M9 18L15 12L9 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
             </button>
           </div>
         </div>
@@ -578,15 +571,19 @@ export default function About() {
         {/* ══════════════════════════════════════
             CTA
         ══════════════════════════════════════ */}
-        <div className="cta-section reveal-section">
+        <div className="cta-section scroll-section">
           <div className="cta-bg">
             {IMGS.cta.map((src, i) => <img key={i} src={src} alt="" aria-hidden="true" />)}
           </div>
           <div className="cta-inner">
-            <p className="label-tag">Begin Your Journey</p>
-            <h2 className="cta-title">Ready to Experience<br /><em>Ember & Grain</em>?</h2>
-            <p className="cta-lead">Reserve your table and embark on a culinary journey unlike any other.</p>
-            <div className="cta-actions">
+            <p className="label-tag anim-child anim-child--fade-up" style={{ '--delay': '0s' }}>Begin Your Journey</p>
+            <h2 className="cta-title anim-child anim-child--fade-up" style={{ '--delay': '0.1s' }}>
+              Ready to Experience<br /><em>Ember & Grain</em>?
+            </h2>
+            <p className="cta-lead anim-child anim-child--fade-up" style={{ '--delay': '0.2s' }}>
+              Reserve your table and embark on a culinary journey unlike any other.
+            </p>
+            <div className="cta-actions anim-child anim-child--fade-up" style={{ '--delay': '0.3s' }}>
               <a href="/reserve" className="btn btn--primary">Reserve a Table</a>
               <a href="/menu" className="btn btn--ghost">Explore Our Menu</a>
             </div>
