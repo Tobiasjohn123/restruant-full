@@ -252,8 +252,7 @@ export default function ReservationPage() {
   // ✅ DUPLICATE BOOKING CHECK
   const checkDuplicateBooking = async () => {
     const cleanPhone = formData.phone.replace(/\D/g, '');
-    console.log('🔍 Running duplicate check for:', { phone: cleanPhone, date: selectedDate.fullDate, time: selectedTime });
-    
+     
     try {
       const { data, error } = await supabase
         .from('bookings')
@@ -263,8 +262,7 @@ export default function ReservationPage() {
         .eq('booking_time', selectedTime)
         .in('status', ['pending', 'confirmed']);
 
-      console.log('📋 Duplicate check result:', { data, error });
-
+ 
       if (error) {
         console.error('Duplicate check error:', error);
         return true; // Assume duplicate check failed, allow but alert
@@ -327,8 +325,7 @@ export default function ReservationPage() {
 
       if (error) throw error;
 
-      console.log('✅ Booking saved:', data);
-      setBookingId(newBookingId);
+       setBookingId(newBookingId);
       setIsProcessing(false);
       setIsComplete(true);
     } catch (err) {

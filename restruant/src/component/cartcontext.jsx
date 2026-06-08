@@ -8,7 +8,7 @@ export function CartProvider({ children }) {
 
   // Show glass notification
   const showNotification = (message, type = 'success') => {
-    console.log('Showing notification:', message, type);
+   
     setNotification({ message, type });
     setTimeout(() => {
       setNotification(null);
@@ -17,7 +17,7 @@ export function CartProvider({ children }) {
 
   // Add item to cart
   const addToCart = (item) => {
-    console.log('addToCart called for:', item.name);
+   
     
     setCart(prevCart => {
       const existingItem = prevCart.find(i => i.id === item.id);
@@ -86,8 +86,7 @@ export function CartProvider({ children }) {
 
   // 🟢 1. DEFINE THE CLEAR CART FUNCTION HERE
   const clearCart = () => {
-    console.log('🟢 clearCart function triggered in context');
-    setCart([]);
+     setCart([]);
   };
 
   return (

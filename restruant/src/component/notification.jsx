@@ -5,8 +5,7 @@ export default function Notification() {
   const { notification } = useCart();
 
   // Debug log to check if notification exists
-  console.log('Notification component rendered:', notification);
-
+ 
   if (!notification) return null;
 
   return (

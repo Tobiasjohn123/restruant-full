@@ -23,8 +23,7 @@ export default function AdminLogin({ onLogin }) {
         throw authError;
       }
 
-      console.log('🔓 Authenticated successfully:', data.user.email);
-      onLogin(true);
+       onLogin(true);
     } catch (err) {
       console.error('Authentication error:', err);
       setError(err.message || 'Incorrect email or password');

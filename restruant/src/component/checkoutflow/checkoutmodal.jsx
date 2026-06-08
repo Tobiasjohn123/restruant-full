@@ -207,23 +207,19 @@ export default function CheckoutModal({
   };
 
 const handleNextStep = (nextStep) => {
-  console.log('handleNextStep called, going to step:', nextStep);
-  
+   
   // Validation for Step 1
   if (step === 1) {
     if (!formData.name.trim() || !formData.phone.trim()) {
-      console.log('Validation failed: missing name or phone');
-      return;
+       return;
     }
     if (orderType === 'delivery' && (!formData.address.trim() || !formData.city.trim())) {
-      console.log('Validation failed: missing delivery info');
-      return;
+       return;
     }
   }
   
   // For Step 2 to Step 3, no validation needed
-  console.log('Setting step to:', nextStep);
-  setStep(nextStep);
+   setStep(nextStep);
 };
 
   const handleSubmit = (e) => {
