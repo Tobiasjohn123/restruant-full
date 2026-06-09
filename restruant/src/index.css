@@ -243,6 +243,241 @@ img                  { max-width: 100%; display: block; }
   backdrop-filter: blur(2px);
 }
 
+
+
+/* ============================================================
+   NAVBAR ANIMATIONS - ADD THESE TO YOUR EXISTING CSS
+   ============================================================ */
+
+/* Logo animation - subtle glow pulse */
+.animate-logo {
+  animation: logoGlow 3s ease-in-out infinite;
+  position: relative;
+}
+
+@keyframes logoGlow {
+  0%, 100% {
+    text-shadow: 0 2px 10px rgba(245, 200, 66, 0.3);
+  }
+  50% {
+    text-shadow: 0 2px 20px rgba(245, 200, 66, 0.8), 0 0 10px rgba(245, 200, 66, 0.4);
+  }
+}
+
+/* Nav items - slide in on page load */
+.nav-item {
+  opacity: 0;
+  animation: slideInDown 0.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Nav link text with hover effect */
+.nav-links li a {
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-text {
+  position: relative;
+  display: inline-block;
+  transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.nav-links li a:hover .nav-text {
+  transform: translateY(-2px);
+}
+
+/* Glow effect on hover */
+.nav-glow {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  animation: glowSlide 0.6s ease-out forwards;
+}
+
+@keyframes glowSlide {
+  from {
+    width: 0;
+    opacity: 0;
+  }
+  to {
+    width: 100%;
+    opacity: 1;
+  }
+}
+
+/* CTA Button animation - pulse effect */
+.animate-cta {
+  position: relative;
+  overflow: hidden;
+  animation: ctaPulse 2s ease-in-out infinite;
+}
+
+@keyframes ctaPulse {
+  0%, 100% {
+    box-shadow: 0 4px 12px rgba(197, 101, 11, 0.4);
+  }
+  50% {
+    box-shadow: 0 6px 20px rgba(197, 101, 11, 0.8), 0 0 15px rgba(197, 101, 11, 0.4);
+  }
+}
+
+/* Ripple effect on CTA click */
+.cta-ripple {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+  pointer-events: none;
+}
+
+.nav-cta:active .cta-ripple {
+  width: 200px;
+  height: 200px;
+  opacity: 0;
+}
+
+/* Mobile menu items - slide in from right */
+.animate-mobile-item {
+  opacity: 0;
+  transform: translateX(50px);
+  animation: slideInRight 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Mobile CTA - fade in up */
+.animate-mobile-cta {
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeInUp 0.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+  animation-delay: 0.35s;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Overlay fade in */
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Hamburger animation enhancements */
+.hamburger span {
+  transition: transform 0.35s cubic-bezier(0.23, 1, 0.32, 1), 
+              opacity 0.2s ease,
+              background 0.2s ease;
+}
+
+.hamburger:hover span {
+  background: var(--gold);
+}
+
+/* Nav background blur animation on scroll */
+.nav {
+  transition: background 0.4s cubic-bezier(0.23, 1, 0.32, 1), 
+              backdrop-filter 0.4s ease,
+              box-shadow 0.4s ease,
+              top 0.4s ease,
+              transform 0.3s ease;
+}
+
+.nav.scrolled {
+  animation: navGlow 0.5s ease-out;
+}
+
+@keyframes navGlow {
+  from {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  }
+  to {
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5), var(--glass-inset);
+  }
+}
+
+/* Mobile menu overlay blur animation */
+.mobile-overlay {
+  animation: overlayFade 0.3s ease-out;
+}
+
+@keyframes overlayFade {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+  }
+  to {
+    opacity: 1;
+    backdrop-filter: blur(2px);
+  }
+}
+
+/* Cart icon bounce on hover (optional) */
+.nav-links li:last-child a:hover .nav-text {
+  animation: cartBounce 0.5s ease;
+}
+
+@keyframes cartBounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+/* Active link indicator */
+.nav-links li a.active::after {
+  width: 100%;
+  background: var(--gold);
+  box-shadow: 0 0 8px rgba(245, 200, 66, 0.6);
+}
+
+
+
 /* ============================================================
    HERO SECTION
    ============================================================ */

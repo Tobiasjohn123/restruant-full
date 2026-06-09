@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [hoveredLink, setHoveredLink] = useState(null);
 
   // Handle scroll effect
   useEffect(() => {
@@ -18,28 +19,49 @@ export default function Navbar() {
     return () => { document.body.style.overflow = ''; };
   }, [menuOpen]);
 
+  // Navigation items array
+  const navItems = [
+    { name: 'Home', path: '/' },
+    { name: 'Menu', path: '/menu' },
+    { name: 'About', path: '/about' },
+    { name: 'Testimonials', path: '/testimonials' },
+    { name: 'Reservation', path: '/reserve' },
+    { name: 'Contact', path: '/contact' },
+    { name: 'Cart 🛒', path: '/cart' },
+  ];
+
   return (
     <>
       {/* Desktop Navigation */}
       <nav className={`nav ${scrolled ? 'scrolled' : ''}`}>
         <div className="nav-bar">
-          {/* Logo */}
-          <Link to="/" className="nav-logo">
+          {/* Logo with animation */}
+          <Link to="/" className="nav-logo animate-logo">
             Ember & Grain
           </Link>
 
           {/* Desktop Menu Links */}
           <ul className="nav-links nav-links-desktop">
-            <li><Link to="/">Home</Link></li>
-            <li><Link to="/menu">Menu</Link></li>
-            <li><Link to="/about">About</Link></li>
-            <li><Link to="/contact">Contact</Link></li>
-            <li><Link to="/cart">Cart 🛒</Link></li>
+            {navItems.map((item, idx) => (
+              <li 
+                key={item.name}
+                className="nav-item animate-nav-item"
+                style={{ animationDelay: `${idx * 0.05}s` }}
+                onMouseEnter={() => setHoveredLink(item.name)}
+                onMouseLeave={() => setHoveredLink(null)}
+              >
+                <Link to={item.path}>
+                  <span className="nav-text">{item.name}</span>
+                  {hoveredLink === item.name && <span className="nav-glow" />}
+                </Link>
+              </li>
+            ))}
           </ul>
 
-          {/* Reserve Button - Navigates to Reservation Page */}
-          <Link to="/reserve" className="nav-cta">
+          {/* Reserve Button */}
+          <Link to="/reserve" className="nav-cta animate-cta">
             <span className="text">Book a Table</span>
+            <span className="cta-ripple" />
           </Link>
 
           {/* Hamburger Button */}
@@ -58,15 +80,24 @@ export default function Navbar() {
       {/* Mobile Menu */}
       <div className={`mobile-menu ${menuOpen ? 'mobile-menu--open' : ''}`}>
         <ul className="mobile-nav-links">
-          <li><Link to="/" onClick={() => setMenuOpen(false)}>Home</Link></li>
-          <li><Link to="/menu" onClick={() => setMenuOpen(false)}>Menu</Link></li>
-          <li><Link to="/about" onClick={() => setMenuOpen(false)}>About</Link></li>
-          <li><Link to="/contact" onClick={() => setMenuOpen(false)}>Contact</Link></li>
-          <li><Link to="/cart" onClick={() => setMenuOpen(false)}>Cart 🛒</Link></li>
+          {navItems.map((item, idx) => (
+            <li 
+              key={item.name}
+              className="animate-mobile-item"
+              style={{ animationDelay: `${idx * 0.07}s` }}
+            >
+              <Link 
+                to={item.path} 
+                onClick={() => setMenuOpen(false)}
+              >
+                {item.name}
+              </Link>
+            </li>
+          ))}
         </ul>
         <Link 
           to="/reserve" 
-          className="mobile-nav-cta" 
+          className="mobile-nav-cta animate-mobile-cta" 
           onClick={() => setMenuOpen(false)}
         >
           Book a Table
@@ -75,7 +106,7 @@ export default function Navbar() {
 
       {/* Mobile Menu Overlay */}
       {menuOpen && (
-        <div className="mobile-overlay" onClick={() => setMenuOpen(false)} />
+        <div className="mobile-overlay animate-fade-in" onClick={() => setMenuOpen(false)} />
       )}
     </>
   );

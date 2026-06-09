@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
-import './reservation.css'; // Make sure this matches your project file structure (e.g. '../reservation/reservation.css' or './reservation.css')
+import './reservation.css';
 
-// ==========================================
-// SVG ICONS
-// ==========================================
 const CalendarIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
     <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
@@ -37,9 +34,6 @@ const CheckIcon = () => (
   </svg>
 );
 
-// ==========================================
-// MAIN RESERVATION PAGE
-// ==========================================
 export default function ReservationPage() {
   const [step, setStep] = useState(1);
   const [selectedDate, setSelectedDate] = useState(null);
@@ -54,7 +48,6 @@ export default function ReservationPage() {
     specialRequests: ''
   });
 
-  // State for real-time field validation
   const [fieldErrors, setFieldErrors] = useState({
     name: '',
     phone: '',
@@ -73,26 +66,22 @@ export default function ReservationPage() {
   const [animateStep, setAnimateStep] = useState(true);
   const [error, setError] = useState(null);
 
-  // Scroll to top when step changes
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [step]);
 
-  // Scroll to top when success screen appears
   useEffect(() => {
     if (isComplete) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }, [isComplete]);
 
-  // Run real-time validation when formData changes
   useEffect(() => {
     if (step === 2) {
       validateFormFields();
     }
   }, [formData]);
 
-  // Generate next 7 days
   const getNext7Days = () => {
     const days = [];
     const today = new Date();
@@ -118,13 +107,11 @@ export default function ReservationPage() {
   const zones = [
     { id: 'patio', name: 'Outdoor Patio', icon: '🌿', desc: 'Under the stars' },
     { id: 'dining', name: 'Main Dining Room', icon: '🍷', desc: 'Vibrant atmosphere' },
-    { id: 'chef', name: 'Chef\'s Counter', icon: '🍣', desc: 'Kitchen view' }
+    { id: 'chef', name: "Chef's Counter", icon: '🍣', desc: 'Kitchen view' }
   ];
 
   const handleNextStep = () => {
-    // If transitioning from step 2, run a final validation block
     if (step === 2) {
-      // Touch all fields to show any hidden errors
       setTouched({ name: true, phone: true, email: true });
       const isValid = validateFormFields();
       if (!isValid) {
@@ -163,7 +150,6 @@ export default function ReservationPage() {
     return 'Large Table for 8+';
   };
 
-  // ✅ REAL-TIME INDIVIDUAL FIELD VALIDATION
   const validateSingleField = (name, value) => {
     let errorMsg = '';
     
@@ -199,7 +185,6 @@ export default function ReservationPage() {
     return errorMsg;
   };
 
-  // Run validation on all fields and return true if form is valid
   const validateFormFields = () => {
     const nameErr = validateSingleField('name', formData.name);
     const phoneErr = validateSingleField('phone', formData.phone);
@@ -214,11 +199,9 @@ export default function ReservationPage() {
     return !(nameErr || phoneErr || emailErr);
   };
 
-  // Handle Input Changes with Instant Restrictions and Validation
   const handleInputChange = (field, e) => {
     let value = e.target.value;
     
-    // Apply immediate input restrictions
     if (field === 'name') {
       value = value.replace(/[^A-Za-z\s]/g, '');
     } else if (field === 'phone') {
@@ -227,32 +210,25 @@ export default function ReservationPage() {
 
     setFormData(prev => ({ ...prev, [field]: value }));
 
-    // Instant error detection
     const errorMsg = validateSingleField(field, value);
     setFieldErrors(prev => ({ ...prev, [field]: errorMsg }));
   };
 
-  // Handle Blur to trigger "touched" state and show errors immediately
   const handleBlur = (field) => {
     setTouched(prev => ({ ...prev, [field]: true }));
     const errorMsg = validateSingleField(field, formData[field]);
     setFieldErrors(prev => ({ ...prev, [field]: errorMsg }));
   };
 
-  // Check if form has any errors or missing required fields
   const isFormInvalid = () => {
-    // If required fields are empty
     if (!formData.name.trim() || !formData.phone) {
       return true;
     }
-    // If any error messages exist in our validation state
     return !!(fieldErrors.name || fieldErrors.phone || fieldErrors.email);
   };
 
-  // ✅ DUPLICATE BOOKING CHECK
   const checkDuplicateBooking = async () => {
     const cleanPhone = formData.phone.replace(/\D/g, '');
-     
     try {
       const { data, error } = await supabase
         .from('bookings')
@@ -262,10 +238,9 @@ export default function ReservationPage() {
         .eq('booking_time', selectedTime)
         .in('status', ['pending', 'confirmed']);
 
- 
       if (error) {
         console.error('Duplicate check error:', error);
-        return true; // Assume duplicate check failed, allow but alert
+        return true;
       }
 
       if (data && data.length > 0) {
@@ -279,12 +254,9 @@ export default function ReservationPage() {
     }
   };
 
-  // ✅ HANDLE CONFIRM BOOKING with all validations
   const handleConfirmBooking = async () => {
-    // Prevent double clicks / concurrent requests
     if (isProcessing) return;
 
-    // Final check
     if (!validateFormFields()) {
       setError('Please resolve all validation errors before confirming.');
       return;
@@ -293,7 +265,6 @@ export default function ReservationPage() {
     setIsProcessing(true);
     setError(null);
 
-    // Check for duplicate booking
     const isNotDuplicate = await checkDuplicateBooking();
     if (!isNotDuplicate) {
       setIsProcessing(false);
@@ -303,7 +274,6 @@ export default function ReservationPage() {
     const newBookingId = 'RES-' + Math.random().toString(36).substr(2, 8).toUpperCase();
     const cleanPhone = formData.phone.replace(/\D/g, '');
 
-    // Clean data before submitting
     const bookingData = {
       booking_id: newBookingId,
       customer_name: formData.name.trim(),
@@ -325,12 +295,20 @@ export default function ReservationPage() {
 
       if (error) throw error;
 
-       setBookingId(newBookingId);
+      setBookingId(newBookingId);
+
+      // Send confirmation email if customer provided email
+      if (bookingData.customer_email) {
+        await supabase.functions.invoke('send-confirmation-email', {
+          body: { booking: bookingData },
+        });
+      }
+
       setIsProcessing(false);
       setIsComplete(true);
+
     } catch (err) {
       console.error('❌ Booking error:', err);
-      // Handle unique constraint violation (Postgres error code 23505)
       if (err.code === '23505') {
         setError('An active booking already exists for this phone number at this date and time.');
       } else if (err.message?.includes('Too many bookings')) {
@@ -434,7 +412,6 @@ export default function ReservationPage() {
           </div>
         </div>
 
-        {/* GENERAL ERROR MESSAGE */}
         {error && (
           <div className="error-message">
             ⚠️ {error}
@@ -442,7 +419,6 @@ export default function ReservationPage() {
         )}
 
         <div className={`reservation-content ${animateStep ? 'animate-in' : 'animate-out'}`}>
-          {/* STEP 1: Date & Time */}
           {step === 1 && (
             <div className="reservation-step">
               <h1 className="step-title">When would you like to dine?</h1>
@@ -535,7 +511,6 @@ export default function ReservationPage() {
             </div>
           )}
 
-          {/* STEP 2: Your Details */}
           {step === 2 && (
             <div className="reservation-step">
               <h1 className="step-title">Tell us about yourself</h1>
@@ -564,7 +539,6 @@ export default function ReservationPage() {
               </div>
 
               <div className="form-section">
-                {/* Name Field Group */}
                 <div className={`res-field-group ${touched.name && fieldErrors.name ? 'has-error' : ''} ${touched.name && !fieldErrors.name && formData.name ? 'is-valid' : ''}`}>
                   <label className="res-field-label">Full Name *</label>
                   <input
@@ -585,7 +559,6 @@ export default function ReservationPage() {
                 </div>
                 
                 <div className="form-row">
-                  {/* Phone Field Group */}
                   <div className={`res-field-group ${touched.phone && fieldErrors.phone ? 'has-error' : ''} ${touched.phone && !fieldErrors.phone && formData.phone ? 'is-valid' : ''}`}>
                     <label className="res-field-label">Phone Number *</label>
                     <input
@@ -605,7 +578,6 @@ export default function ReservationPage() {
                     )}
                   </div>
                   
-                  {/* Email Field Group */}
                   <div className={`res-field-group ${touched.email && fieldErrors.email ? 'has-error' : ''} ${touched.email && !fieldErrors.email && formData.email ? 'is-valid' : ''}`}>
                     <label className="res-field-label">Email Address</label>
                     <input
@@ -625,7 +597,6 @@ export default function ReservationPage() {
                   </div>
                 </div>
                 
-                {/* Special Requests Field Group */}
                 <div className="res-field-group">
                   <label className="res-field-label">Special Requests (Optional)</label>
                   <textarea
@@ -676,7 +647,6 @@ export default function ReservationPage() {
             </div>
           )}
 
-          {/* STEP 3: Confirm */}
           {step === 3 && (
             <div className="reservation-step">
               <h1 className="step-title">Confirm Your Reservation</h1>
