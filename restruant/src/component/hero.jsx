@@ -2,6 +2,25 @@
 import Newimage from '/src/assets/res-img-w.png';
 import { useLoading } from './loadingContent.jsx';
 
+// SVG Icon Components
+const FireIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" />
+  </svg>
+);
+
+const LightningIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+  </svg>
+);
+
+const DotIcon = () => (
+  <svg width="6" height="6" viewBox="0 0 6 6" fill="currentColor">
+    <circle cx="3" cy="3" r="3" />
+  </svg>
+);
+
 export default function Hero() {
   const [heroLoading, setHeroLoading] = useState(true);
   const [animationReady, setAnimationReady] = useState(false);
@@ -15,11 +34,9 @@ export default function Hero() {
   // Handle loading and animation timing
   useEffect(() => {
     showLoading();
-    // Simulate loading (remove this timeout if no data fetching)
     const timer = setTimeout(() => {
       setHeroLoading(false);
       hideLoading();
-      // Enable animations after loading is complete
       setTimeout(() => {
         setAnimationReady(true);
       }, 100);
@@ -28,7 +45,7 @@ export default function Hero() {
     return () => clearTimeout(timer);
   }, []);
 
-  // 3D Tilt Effect (only runs after loading)
+  // 3D Tilt Effect
   useEffect(() => {
     if (heroLoading) return;
 
@@ -75,7 +92,7 @@ export default function Hero() {
     };
   }, [heroLoading]);
 
-  // Show loading skeleton while loading
+  // Loading skeleton
   if (heroLoading) {
     return (
       <div className="hero-skeleton">
@@ -111,8 +128,6 @@ export default function Hero() {
             Discover dishes built from rich ingredients, smoky flavors, and thoughtful presentation. The perfect meal begins and ends here.
           </p>
 
-       
-
           <a href="#menu" className={`hero-cta ${animationReady ? 'animate' : ''}`}>
             Explore Our Menu
           </a>
@@ -120,20 +135,20 @@ export default function Hero() {
 
         <div className="hero-gallery" ref={galleryRef}>
           <div className={`gallery-badge badge-top ${animationReady ? 'animate' : ''}`}>
-            <span className="badge-dot"></span>
+            <DotIcon />
             Craft Kitchen
           </div>
           <img 
             src={Newimage} 
-            alt="Featured dish 1" 
+            alt="Featured dish" 
             className={`hero-image ${animationReady ? 'animate' : ''}`} 
           />
           <div className={`gallery-badge badge-bottom ${animationReady ? 'animate' : ''}`}>
-            <span className="badge-icon">🔥</span>
+            <FireIcon />
             Chef's Special
           </div>
           <div className={`gallery-badge badge-cal ${animationReady ? 'animate' : ''}`}>
-            <span className="badge-icon">⚡</span>
+            <LightningIcon />
             680 kcal
           </div>
         </div>
