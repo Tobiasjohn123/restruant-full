@@ -111,20 +111,7 @@ export default function Hero() {
             Discover dishes built from rich ingredients, smoky flavors, and thoughtful presentation. The perfect meal begins and ends here.
           </p>
 
-          <div className={`hero-tags ${animationReady ? 'animate' : ''}`}>
-            <span className="hero-tag tag-fire">
-              <span className="tag-icon">🔥</span>
-              Chef's Special
-            </span>
-            <span className="hero-tag tag-craft">
-              <span className="tag-icon">✦</span>
-              Craft Kitchen
-            </span>
-            <span className="hero-tag tag-cal">
-              <span className="tag-icon">⚡</span>
-              680 kcal
-            </span>
-          </div>
+       
 
           <a href="#menu" className={`hero-cta ${animationReady ? 'animate' : ''}`}>
             Explore Our Menu
