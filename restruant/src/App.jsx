@@ -5,7 +5,7 @@ import Hero from './component/hero';
 import Menu from './component/menu';
 import Cart from './component/cart';
 import Notification from './component/notification';
-import GlobalLoading from './component/globalLoading';
+import GlobalLoading from './component/GlobalLoading';
 import ReservationPage from './component/reservation/reservation';
 import About from './component/aboutSection/about';
 import Testimonials from './component/testimonial section/testimonial';
