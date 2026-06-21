@@ -1234,6 +1234,10 @@
     display: grid;
     grid-template-columns: (auto-fill, minmax(0px));
   }
+  .hero-scroll-cue
+  {
+    margin-left: 2px;
+  }
 }
 
 /* Touch device cleanup */

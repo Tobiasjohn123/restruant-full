@@ -482,9 +482,9 @@ img                  { max-width: 100%; display: block; }
    HERO SECTION
    ============================================================ */
 .section {
-    padding: 8rem clamp(1.5rem, 5vw, 5.7rem) 4rem;
+  padding: 5.5rem 4rem 5rem;
   max-width: 1280px;
-  margin: 1rem auto;
+  margin: 1rem 2.5rem;
   position: relative;
   border-radius: 24px;
   overflow: visible;
@@ -1218,7 +1218,18 @@ background: radial-gradient(ellipse at top left, rgba(181, 100, 0, 0.291) 0%, rg
   .menu-section {
     padding: 2rem 0.8rem;
   }
-  
+  .section
+  {
+    margin: 0 auto;
+  }
+  .hero-t
+  {
+    font-size: 1.7rem;
+  }
+  .hero-subtitle
+  {
+    font-size: .8rem;
+  }
   .menu-title {
     font-size: 1.5rem;
   }
