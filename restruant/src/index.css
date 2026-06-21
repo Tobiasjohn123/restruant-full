@@ -482,7 +482,7 @@ img                  { max-width: 100%; display: block; }
    HERO SECTION
    ============================================================ */
 .section {
-  padding: 8rem 2.5rem 4rem;
+  padding: 8rem 5.7rem 4rem;
   max-width: 1280px;
   margin: 1rem auto;
   position: relative;
@@ -491,6 +491,14 @@ img                  { max-width: 100%; display: block; }
   perspective: 1400px;
   perspective-origin: center center;
 }
+
+/* ==========*quick repsonsive fix============= */
+/* Base (mobile first) */
+ 
+ 
+
+
+
 
 .section::before {
   content: '';
@@ -827,7 +835,7 @@ img                  { max-width: 100%; display: block; }
 }
 
 @media (max-width: 480px) {
-  .section      { padding: 6rem 1rem 2.5rem; }
+  .section      { padding: 9rem 2rem 2.5rem; }
   .hero-title   { font-size: 1.8rem; }
   .hero-subtitle{ font-size: 1rem; }
   .hero-image   { height: 260px; width: 260px; }
